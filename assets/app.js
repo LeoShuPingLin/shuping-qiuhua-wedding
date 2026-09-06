@@ -1,6 +1,5 @@
-// 拿到拍拍印提供的「新人專屬 LINE 加好友網址」後，只要修改這一行。
-// 範例：https://lin.ee/AbCd123
-const WEDDING_CONFIG = { lineFriendUrl: '' };
+// LINE 官方帳號的「加入好友網址」
+const WEDDING_CONFIG = { lineFriendUrl: 'https://lin.ee/Stg17uT' };
 
 const weddingStart = new Date('2026-10-09T14:00:00+08:00');
 
