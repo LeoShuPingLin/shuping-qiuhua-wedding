@@ -6,13 +6,28 @@ const content = document.querySelector('#invitation-content');
 const openButton = document.querySelector('#open-invitation');
 const floatingLine = document.querySelector('.floating-line');
 
+let invitationOpening = false;
+
 function openInvitation() {
+  if (invitationOpening) return;
+  invitationOpening = true;
+
   openButton.setAttribute('aria-expanded', 'true');
-  opening.classList.add('opened');
+  opening.classList.add('is-opening');
   document.body.classList.remove('locked');
-  content.hidden = false;
-  window.setTimeout(() => content.scrollIntoView({ behavior: 'smooth' }), 420);
-  window.setTimeout(() => floatingLine.hidden = false, 900);
+
+  window.setTimeout(() => {
+    content.hidden = false;
+  }, 1650);
+
+  window.setTimeout(() => {
+    opening.classList.add('opened');
+    content.scrollIntoView({ behavior: 'smooth' });
+  }, 2450);
+
+  window.setTimeout(() => {
+    floatingLine.hidden = false;
+  }, 3050);
 }
 
 openButton.addEventListener('click', openInvitation);
