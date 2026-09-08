@@ -6,6 +6,35 @@ const content = document.querySelector('#invitation-content');
 const openButton = document.querySelector('#open-invitation');
 const floatingLine = document.querySelector('.floating-line');
 
+function getSafeRecipient(value) {
+  if (!value) return '';
+  return value.replace(/[\r\n\t]+/g, ' ').replace(/\s{2,}/g, ' ').trim().slice(0, 30);
+}
+
+function personalizeInvitation() {
+  const params = new URLSearchParams(window.location.search);
+  const recipient = getSafeRecipient(params.get('to'));
+  const sender = (params.get('from') || '').trim().toLowerCase();
+  const greeting = document.querySelector('.letter-greeting');
+  const lead = document.querySelector('.letter-lead');
+
+  if (greeting) {
+    greeting.textContent = recipient ? `Dear ${recipient} ✨` : 'Dear 親愛的你 ✨';
+  }
+
+  if (lead) {
+    if (sender === 'shuping' || sender === '書平') {
+      lead.textContent = '我和秋華要結婚了 🤍';
+    } else if (sender === 'qiuhua' || sender === '秋華') {
+      lead.textContent = '我和書平要結婚了 🤍';
+    } else {
+      lead.textContent = '我們要結婚了 🤍';
+    }
+  }
+}
+
+personalizeInvitation();
+
 const photoSwitchHint = document.createElement('div');
 photoSwitchHint.className = 'photo-switch-hint';
 photoSwitchHint.textContent = '輕觸照片可切換';
