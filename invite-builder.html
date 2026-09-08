@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#8a3e50" />
+  <title>喜帖連結產生器｜書平＆秋華</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --wine: #7d3448;
+      --wine-deep: #582536;
+      --paper: #fffaf7;
+      --ink: #3f3034;
+      --muted: #7a686e;
+      --line: rgba(125,52,72,.16);
+      --soft: #f4e8eb;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: 28px 18px;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 20% 10%, rgba(255,255,255,.9), transparent 32%),
+        linear-gradient(145deg, #ead8dd, #cdb8c0);
+      font-family: "Noto Sans TC", system-ui, sans-serif;
+    }
+
+    .panel {
+      width: min(100%, 560px);
+      padding: 34px 26px 30px;
+      border: 1px solid rgba(255,255,255,.72);
+      border-radius: 22px;
+      background: rgba(255,250,247,.96);
+      box-shadow: 0 24px 70px rgba(74,39,50,.18);
+    }
+
+    .eyebrow {
+      margin: 0 0 6px;
+      color: var(--wine);
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .18em;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: "Noto Serif TC", serif;
+      font-size: clamp(1.8rem, 7vw, 2.35rem);
+      letter-spacing: .05em;
+    }
+
+    .intro {
+      margin: 12px 0 26px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    label, legend {
+      display: block;
+      margin-bottom: 9px;
+      font-weight: 700;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      min-height: 52px;
+      padding: 0 15px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      outline: none;
+      color: var(--ink);
+      background: white;
+      font: inherit;
+      font-size: 1.05rem;
+    }
+
+    input[type="text"]:focus {
+      border-color: rgba(125,52,72,.55);
+      box-shadow: 0 0 0 4px rgba(125,52,72,.08);
+    }
+
+    fieldset {
+      margin: 22px 0 0;
+      padding: 0;
+      border: 0;
+    }
+
+    .sender-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+    }
+
+    .sender-option input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .sender-option span {
+      min-height: 48px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .sender-option input:checked + span {
+      color: white;
+      border-color: var(--wine);
+      background: var(--wine);
+      box-shadow: 0 7px 18px rgba(125,52,72,.2);
+    }
+
+    .preview {
+      margin-top: 25px;
+      padding: 20px 18px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--soft);
+    }
+
+    .preview small {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--muted);
+      font-weight: 700;
+      letter-spacing: .08em;
+    }
+
+    .preview p {
+      margin: 4px 0;
+      font-family: "Noto Serif TC", serif;
+      font-size: 1.1rem;
+      line-height: 1.65;
+    }
+
+    .url-box {
+      margin-top: 18px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      overflow-wrap: anywhere;
+      color: var(--muted);
+      background: white;
+      border: 1px dashed rgba(125,52,72,.24);
+      font-size: .83rem;
+      line-height: 1.55;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    button, .open-link {
+      min-height: 50px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    #copy-button {
+      border: 0;
+      color: white;
+      background: var(--wine);
+      box-shadow: 0 10px 24px rgba(125,52,72,.2);
+    }
+
+    .open-link {
+      border: 1px solid var(--wine);
+      color: var(--wine);
+      background: transparent;
+    }
+
+    .status {
+      min-height: 24px;
+      margin: 11px 0 0;
+      color: var(--wine);
+      text-align: center;
+      font-size: .9rem;
+      font-weight: 600;
+    }
+
+    .hint {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: .82rem;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 430px) {
+      .panel { padding: 28px 20px 25px; }
+      .sender-options { grid-template-columns: 1fr; }
+      .actions { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="panel">
+    <p class="eyebrow">WEDDING INVITATION TOOL</p>
+    <h1>喜帖連結產生器</h1>
+    <p class="intro">輸入收件人的稱呼、選擇由誰發送，就會自動產生可分享的個人化喜帖網址。</p>
+
+    <label for="recipient">收件人稱呼</label>
+    <input id="recipient" type="text" maxlength="30" placeholder="例如：善鈞" autocomplete="off" />
+    <p class="hint">可以填「善鈞」、「蔡叔叔」、「宜芳學姊」等你平常會稱呼對方的方式。</p>
+
+    <fieldset>
+      <legend>由誰發送</legend>
+      <div class="sender-options">
+        <label class="sender-option">
+          <input type="radio" name="sender" value="shuping" checked />
+          <span>書平</span>
+        </label>
+        <label class="sender-option">
+          <input type="radio" name="sender" value="qiuhua" />
+          <span>秋華</span>
+        </label>
+        <label class="sender-option">
+          <input type="radio" name="sender" value="" />
+          <span>共同邀請</span>
+        </label>
+      </div>
+    </fieldset>
+
+    <section class="preview" aria-live="polite">
+      <small>邀請信預覽</small>
+      <p id="preview-greeting">Dear 親愛的你 ✨</p>
+      <p id="preview-lead">我和秋華要結婚了 🤍</p>
+    </section>
+
+    <div class="url-box" id="generated-url"></div>
+
+    <div class="actions">
+      <button id="copy-button" type="button">複製喜帖連結</button>
+      <a id="open-link" class="open-link" href="./" target="_blank" rel="noopener">開啟測試</a>
+    </div>
+    <p class="status" id="status" role="status" aria-live="polite"></p>
+  </main>
+
+  <script>
+    const recipientInput = document.querySelector('#recipient');
+    const senderInputs = [...document.querySelectorAll('input[name="sender"]')];
+    const previewGreeting = document.querySelector('#preview-greeting');
+    const previewLead = document.querySelector('#preview-lead');
+    const generatedUrl = document.querySelector('#generated-url');
+    const copyButton = document.querySelector('#copy-button');
+    const openLink = document.querySelector('#open-link');
+    const status = document.querySelector('#status');
+
+    function cleanRecipient(value) {
+      return value.replace(/[\r\n\t]+/g, ' ').replace(/\s{2,}/g, ' ').trim().slice(0, 30);
+    }
+
+    function getSender() {
+      return senderInputs.find(input => input.checked)?.value || '';
+    }
+
+    function buildInvitationUrl() {
+      const recipient = cleanRecipient(recipientInput.value);
+      const sender = getSender();
+
+      // invite-builder.html is stored beside index.html, so "./" always resolves
+      // to the correct GitHub Pages project root, including /shuping-qiuhua-wedding/.
+      const url = new URL('./', window.location.href);
+      url.search = '';
+      url.hash = '';
+
+      if (recipient) url.searchParams.set('to', recipient);
+      if (sender) url.searchParams.set('from', sender);
+
+      previewGreeting.textContent = recipient ? `Dear ${recipient} ✨` : 'Dear 親愛的你 ✨';
+      previewLead.textContent = sender === 'shuping'
+        ? '我和秋華要結婚了 🤍'
+        : sender === 'qiuhua'
+          ? '我和書平要結婚了 🤍'
+          : '我們要結婚了 🤍';
+
+      generatedUrl.textContent = url.href;
+      openLink.href = url.href;
+      status.textContent = '';
+      return url.href;
+    }
+
+    recipientInput.addEventListener('input', buildInvitationUrl);
+    senderInputs.forEach(input => input.addEventListener('change', buildInvitationUrl));
+
+    copyButton.addEventListener('click', async () => {
+      const url = buildInvitationUrl();
+      try {
+        await navigator.clipboard.writeText(url);
+        status.textContent = '已複製，可以直接貼到 LINE 傳給對方 ✨';
+      } catch (error) {
+        const textarea = document.createElement('textarea');
+        textarea.value = url;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        textarea.remove();
+        status.textContent = '已複製，可以直接貼到 LINE 傳給對方 ✨';
+      }
+    });
+
+    buildInvitationUrl();
+  </script>
+</body>
+</html>
