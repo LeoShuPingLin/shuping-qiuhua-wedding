@@ -1,12 +1,26 @@
-// LINE 官方帳號的「加入好友網址」
 const WEDDING_CONFIG = { lineFriendUrl: 'https://lin.ee/Stg17uT' };
 
 const weddingStart = new Date('2026-10-09T14:00:00+08:00');
+const opening = document.querySelector('.opening');
+const content = document.querySelector('#invitation-content');
+const openButton = document.querySelector('#open-invitation');
+const floatingLine = document.querySelector('.floating-line');
+
+function openInvitation() {
+  openButton.setAttribute('aria-expanded', 'true');
+  opening.classList.add('opened');
+  document.body.classList.remove('locked');
+  content.hidden = false;
+  window.setTimeout(() => content.scrollIntoView({ behavior: 'smooth' }), 420);
+  window.setTimeout(() => floatingLine.hidden = false, 900);
+}
+
+openButton.addEventListener('click', openInvitation);
 
 function updateCountdown() {
   const diff = weddingStart.getTime() - Date.now();
   if (diff <= 0) {
-    document.querySelector('.countdown').innerHTML = '<span><strong>幸福進行中</strong></span>';
+    document.querySelector('.countdown').innerHTML = '<p>幸福進行中</p>';
     return;
   }
   const days = Math.floor(diff / 86400000);
@@ -20,73 +34,16 @@ function updateCountdown() {
 updateCountdown();
 setInterval(updateCountdown, 60000);
 
-const header = document.querySelector('.topbar');
-const floatingCta = document.querySelector('.floating-cta');
-function updateChrome() {
-  header.classList.toggle('scrolled', window.scrollY > 30);
-  floatingCta.style.opacity = window.scrollY > window.innerHeight * .55 ? '1' : '0';
-  floatingCta.style.pointerEvents = window.scrollY > window.innerHeight * .55 ? 'auto' : 'none';
-}
-window.addEventListener('scroll', updateChrome, { passive: true });
-updateChrome();
-
 const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-      observer.unobserve(entry.target);
-    }
+    if (!entry.isIntersecting) return;
+    entry.target.classList.add('visible');
+    observer.unobserve(entry.target);
   });
 }, { threshold: .12 });
-document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+document.querySelectorAll('.reveal').forEach((element) => observer.observe(element));
 
-const modal = document.querySelector('#demo-modal');
-const modalTitle = document.querySelector('#modal-title');
-const modalMessage = document.querySelector('#modal-message');
-let lastFocus;
-
-function openModal(title, message) {
-  lastFocus = document.activeElement;
-  modalTitle.textContent = title;
-  modalMessage.textContent = message;
-  modal.hidden = false;
-  document.body.style.overflow = 'hidden';
-  modal.querySelector('.modal-close').focus();
-}
-
-function closeModal() {
-  modal.hidden = true;
-  document.body.style.overflow = '';
-  if (lastFocus) lastFocus.focus();
-}
-
-document.querySelectorAll('[data-demo-line]').forEach((button) => {
-  button.addEventListener('click', () => {
-    if (WEDDING_CONFIG.lineFriendUrl) {
-      window.location.href = WEDDING_CONFIG.lineFriendUrl;
-      return;
-    }
-    openModal(
-      '拍拍印串接位置',
-      '正式版取得你們的專屬LINE加入好友連結後，這個按鈕會直接開啟加入好友與出席回覆。'
-    );
-  });
-});
-
-if (WEDDING_CONFIG.lineFriendUrl) {
-  const status = document.querySelector('#line-status');
-  if (status) status.hidden = true;
-}
-
-document.querySelectorAll('[data-feature]').forEach((button) => {
-  button.addEventListener('click', () => openModal(
-    button.dataset.feature,
-    `這是「${button.dataset.feature}」的入口示意；正式版將由拍拍印LINE提供實際功能。`
-  ));
-});
-
-document.querySelectorAll('[data-close-modal]').forEach((button) => button.addEventListener('click', closeModal));
-document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && !modal.hidden) closeModal(); });
+floatingLine.addEventListener('click', () => window.open(WEDDING_CONFIG.lineFriendUrl, '_blank', 'noopener'));
 
 const events = {
   ceremony: {
@@ -111,7 +68,7 @@ function escapeIcs(text) {
 
 function downloadCalendar(key) {
   const event = events[key];
-  const content = [
+  const calendar = [
     'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//ShupingQiuhua//Wedding//ZH-TW',
     'BEGIN:VEVENT', `UID:${key}-20261009@shuping-qiuhua-wedding`,
     `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '')}`,
@@ -119,7 +76,7 @@ function downloadCalendar(key) {
     `SUMMARY:${escapeIcs(event.title)}`, `LOCATION:${escapeIcs(event.location)}`,
     `DESCRIPTION:${escapeIcs(event.description)}`, 'END:VEVENT', 'END:VCALENDAR'
   ].join('\r\n');
-  const blob = new Blob([content], { type: 'text/calendar;charset=utf-8' });
+  const blob = new Blob([calendar], { type: 'text/calendar;charset=utf-8' });
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
   link.download = `${key}-2026-10-09.ics`;
