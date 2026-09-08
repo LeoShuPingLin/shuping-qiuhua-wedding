@@ -56,7 +56,7 @@
   box-shadow: 0 2px 7px rgba(15,20,28,.38);
 }
 
-/* Allow the envelope to finish its role and become a small visual base after the photos emerge. */
+/* The envelope shrinks after opening, but stays in place as a small base instead of dropping out of view. */
 .envelope-back-layer,
 .envelope-front-layer {
   transition:
@@ -68,7 +68,7 @@
 
 .opening.envelope-retired .envelope-back-layer,
 .opening.envelope-retired .envelope-front-layer {
-  transform: translateX(-50%) translateY(92px) scale(.67);
+  transform: translateX(-50%) translateY(42px) scale(.68);
 }
 
 .opening.envelope-retired .envelope-back-layer {
@@ -85,10 +85,10 @@
 
 .opening.envelope-retired .envelope-shadow {
   opacity: .40;
-  transform: translateX(-50%) translateY(38px) scale(.68);
+  transform: translateX(-50%) translateY(18px) scale(.70);
 }
 
-/* Photo takeover: while the envelope shrinks, the photos grow and move upward together. */
+/* Photo takeover: use the freed lower half of the screen instead of covering the names/date. */
 .opening.envelope-retired .photo-card {
   transition:
     transform .72s cubic-bezier(.2,.74,.18,1),
@@ -99,18 +99,18 @@
 }
 
 .opening.envelope-retired .photo-one {
-  transform: translate(-165%, -178px) rotate(-10deg) scale(1.06);
+  transform: translate(-168%, -102px) rotate(-10deg) scale(1.08);
 }
 
 .opening.envelope-retired .photo-two {
-  width: clamp(228px, 60vw, 280px);
-  padding: 10px 10px 27px;
-  transform: translate(-50%, -264px) rotate(-1deg) scale(1);
+  width: clamp(236px, 62vw, 292px);
+  padding: 10px 10px 28px;
+  transform: translate(-50%, -178px) rotate(-1deg) scale(1);
   box-shadow: 0 25px 46px rgba(38,25,27,.34);
 }
 
 .opening.envelope-retired .photo-three {
-  transform: translate(65%, -176px) rotate(10deg) scale(1.06);
+  transform: translate(68%, -100px) rotate(10deg) scale(1.08);
 }
 
 /* The bottom instruction sits on the darker vignette, away from the ivory envelope. */
@@ -153,20 +153,20 @@
 
   .opening.envelope-retired .envelope-back-layer,
   .opening.envelope-retired .envelope-front-layer {
-    transform: translateX(-50%) translateY(72px) scale(.66);
+    transform: translateX(-50%) translateY(34px) scale(.67);
   }
 
   .opening.envelope-retired .photo-one {
-    transform: translate(-158%, -132px) rotate(-9deg) scale(.98);
+    transform: translate(-160%, -82px) rotate(-9deg) scale(1.01);
   }
 
   .opening.envelope-retired .photo-two {
-    width: 210px;
-    transform: translate(-50%, -205px) rotate(-1deg) scale(1);
+    width: 218px;
+    transform: translate(-50%, -148px) rotate(-1deg) scale(1);
   }
 
   .opening.envelope-retired .photo-three {
-    transform: translate(58%, -130px) rotate(9deg) scale(.98);
+    transform: translate(60%, -80px) rotate(9deg) scale(1.01);
   }
 
   .scroll-hint { bottom: 3px; font-size: .98rem; }
@@ -179,20 +179,20 @@
 
   .opening.envelope-retired .envelope-back-layer,
   .opening.envelope-retired .envelope-front-layer {
-    transform: translateX(-50%) translateY(80px) scale(.66);
+    transform: translateX(-50%) translateY(38px) scale(.67);
   }
 
   .opening.envelope-retired .photo-one {
-    transform: translate(-156%, -160px) rotate(-9deg) scale(.98);
+    transform: translate(-158%, -94px) rotate(-9deg) scale(1.01);
   }
 
   .opening.envelope-retired .photo-two {
-    width: 214px;
-    transform: translate(-50%, -238px) rotate(-1deg) scale(1);
+    width: 222px;
+    transform: translate(-50%, -158px) rotate(-1deg) scale(1);
   }
 
   .opening.envelope-retired .photo-three {
-    transform: translate(56%, -158px) rotate(9deg) scale(.98);
+    transform: translate(58%, -92px) rotate(9deg) scale(1.01);
   }
 }
 
