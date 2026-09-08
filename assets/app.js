@@ -5,7 +5,6 @@ const opening = document.querySelector('.opening');
 const content = document.querySelector('#invitation-content');
 const openButton = document.querySelector('#open-invitation');
 const floatingLine = document.querySelector('.floating-line');
-const photoCards = Array.from(document.querySelectorAll('.photo-card'));
 
 const photoSwitchHint = document.createElement('div');
 photoSwitchHint.className = 'photo-switch-hint';
@@ -42,15 +41,8 @@ function switchPhotoToCenter(card) {
   if (!centerCard || card === centerCard) return;
 
   const sideClass = card.classList.contains('photo-one') ? 'photo-one' : 'photo-three';
-
-  centerCard.classList.remove('photo-two');
-  card.classList.remove(sideClass);
-
-  requestAnimationFrame(() => {
-    centerCard.classList.add(sideClass);
-    card.classList.add('photo-two');
-  });
-
+  centerCard.classList.replace('photo-two', sideClass);
+  card.classList.replace(sideClass, 'photo-two');
   photoSwitchHint.classList.remove('visible');
 }
 
