@@ -19,25 +19,110 @@
   background: rgba(145,62,82,.34);
 }
 
-.line-card .line-reminder {
-  margin: 22px 0 0;
-  padding: 17px 17px 16px;
-  border-top: 1px solid rgba(255,255,255,.22);
-  border-bottom: 1px solid rgba(255,255,255,.16);
-  color: rgba(255,255,255,.9);
-  background: rgba(255,255,255,.07);
-  font-size: clamp(.94rem, 3.8vw, 1.02rem);
-  line-height: 1.75;
+/* Wedding LINE and reminders now read as one integrated page, not a card inside another card. */
+.line-section {
+  min-height: auto;
+  align-items: center;
+  padding-top: clamp(58px, 9vh, 82px);
+  padding-bottom: clamp(58px, 9vh, 82px);
+}
+
+.line-card {
+  padding: clamp(28px, 6vw, 36px) clamp(22px, 5.5vw, 30px);
+}
+
+.line-card > p:not(.section-label) {
+  margin: 14px 0 18px;
+  line-height: 1.8;
+}
+
+/* Make the LINE action unmistakably tappable while keeping the wording simple. */
+.line-card .line-button {
+  position: relative;
+  min-height: 58px;
+  margin-top: 14px;
+  border: 2px solid rgba(255,255,255,.92);
+  color: white;
+  background: #06c755;
+  font-size: clamp(1.05rem, 4.4vw, 1.18rem);
+  font-weight: 800;
+  letter-spacing: .08em;
+  box-shadow:
+    0 12px 28px rgba(6,199,85,.24),
+    0 4px 12px rgba(26,15,19,.22);
+  transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+}
+
+.line-card .line-button::before {
+  content: "+";
+  width: 28px;
+  height: 28px;
+  margin-right: 10px;
+  display: inline-grid;
+  place-items: center;
+  border: 1.5px solid rgba(255,255,255,.92);
+  border-radius: 50%;
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.line-card .line-button:active {
+  transform: translateY(1px) scale(.99);
+  filter: brightness(.96);
+  box-shadow: 0 7px 18px rgba(6,199,85,.2);
+}
+
+.line-reminder {
+  margin-top: 30px;
+  padding-top: 26px;
+  border-top: 1px solid rgba(255,255,255,.28);
   text-align: left;
 }
 
-.line-card .line-reminder strong {
-  display: block;
-  margin-bottom: 5px;
+.line-reminder-title {
+  margin: 0 0 18px;
   color: white;
   font-family: var(--serif);
-  font-size: 1.02em;
+  font-size: clamp(1.35rem, 5.5vw, 1.65rem);
+  font-weight: 700;
   letter-spacing: .08em;
+}
+
+.line-reminder-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 17px;
+}
+
+.line-reminder-list li {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  color: rgba(255,255,255,.9);
+  font-size: clamp(.98rem, 4vw, 1.06rem);
+  line-height: 1.75;
+}
+
+.line-reminder-list .reminder-number {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,.38);
+  border-radius: 50%;
+  color: white;
+  background: rgba(255,255,255,.08);
+  font-family: var(--script);
+  font-size: 1.02rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.line-reminder-list p {
+  margin: 2px 0 0;
 }
 
 /* The story, memory collage and final invitation now read as one closing emotional chapter. */
@@ -77,6 +162,10 @@
   width: 100%;
 }
 
+.line-in-app .line-section {
+  padding-bottom: calc(72px + env(safe-area-inset-bottom));
+}
+
 @media (max-width: 430px) {
   .schedule {
     border-top-width: 22px;
@@ -87,9 +176,28 @@
     width: 44px;
   }
 
-  .line-card .line-reminder {
-    margin-top: 20px;
-    padding: 15px 15px 14px;
+  .line-card {
+    padding: 26px 20px 28px;
+  }
+
+  .line-reminder {
+    margin-top: 26px;
+    padding-top: 22px;
+  }
+
+  .line-reminder-list {
+    gap: 15px;
+  }
+
+  .line-reminder-list li {
+    grid-template-columns: 36px minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .line-reminder-list .reminder-number {
+    width: 32px;
+    height: 32px;
+    font-size: .94rem;
   }
 
   .memory-collage + .invitation-copy {
