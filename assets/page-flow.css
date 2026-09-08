@@ -1,0 +1,42 @@
+/* Page flow refinements: schedule -> wedding LINE/reminder -> story/memories -> closing invitation */
+
+.line-card .line-reminder {
+  margin: 22px 0 0;
+  padding: 17px 17px 16px;
+  border-top: 1px solid rgba(255,255,255,.22);
+  border-bottom: 1px solid rgba(255,255,255,.16);
+  color: rgba(255,255,255,.9);
+  background: rgba(255,255,255,.07);
+  font-size: clamp(.94rem, 3.8vw, 1.02rem);
+  line-height: 1.75;
+  text-align: left;
+}
+
+.line-card .line-reminder strong {
+  display: block;
+  margin-bottom: 5px;
+  color: white;
+  font-family: var(--serif);
+  font-size: 1.02em;
+  letter-spacing: .08em;
+}
+
+/* The story, memory collage and final invitation now read as one closing emotional chapter. */
+.scrapbook + .memory-collage {
+  border-top: 0;
+}
+
+.memory-collage + .invitation-copy {
+  padding-top: 64px;
+}
+
+@media (max-width: 430px) {
+  .line-card .line-reminder {
+    margin-top: 20px;
+    padding: 15px 15px 14px;
+  }
+
+  .memory-collage + .invitation-copy {
+    padding-top: 56px;
+  }
+}
