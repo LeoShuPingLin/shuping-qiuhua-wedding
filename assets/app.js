@@ -1,5 +1,8 @@
 const WEDDING_CONFIG = { lineFriendUrl: 'https://lin.ee/Stg17uT' };
 
+const isLineInApp = /(?:^|\s|[;(])Line\//i.test(navigator.userAgent) || /\bLine\b/i.test(navigator.userAgent);
+if (isLineInApp) document.body.classList.add('line-in-app');
+
 const weddingStart = new Date('2026-10-09T14:00:00+08:00');
 const opening = document.querySelector('.opening');
 const content = document.querySelector('#invitation-content');
@@ -75,8 +78,6 @@ function switchPhotoToCenter(card) {
   const sideClass = card.classList.contains('photo-one') ? 'photo-one' : 'photo-three';
   centerCard.classList.replace('photo-two', sideClass);
   card.classList.replace(sideClass, 'photo-two');
-
-  // Briefly re-emphasize the interaction cue, then return it to its subtle persistent state.
   showPhotoSwitchHint(1400);
 }
 
@@ -95,12 +96,10 @@ function openInvitation() {
     updateFloatingLine();
   }, 1900);
 
-  // Once the photos have fully emerged, the envelope shrinks as the photos take over the composition.
   window.setTimeout(() => {
     opening.classList.add('envelope-retired');
   }, 2250);
 
-  // Show the photo interaction hint after the envelope and photos finish settling.
   window.setTimeout(() => {
     showPhotoSwitchHint();
   }, 3000);
