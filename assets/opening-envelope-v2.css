@@ -1,0 +1,220 @@
+/* Opening v2 refinements: senior-friendly type, clearer photo fan, visible opened flap */
+
+/* Larger, easier-to-read opening copy */
+.opening-title {
+  top: clamp(30px, 5.4vh, 58px);
+  padding: 0 24px;
+}
+
+.opening-title .opening-eyebrow {
+  margin-bottom: 8px;
+  font-size: clamp(.92rem, 4vw, 1.06rem);
+  font-weight: 600;
+  letter-spacing: .2em;
+}
+
+.opening-title h1 {
+  font-size: clamp(2.35rem, 10.5vw, 3.25rem);
+  letter-spacing: .1em;
+  line-height: 1.16;
+}
+
+.opening-title .opening-names {
+  margin-top: 10px;
+  font-size: clamp(1.06rem, 4.8vw, 1.28rem);
+  letter-spacing: .17em;
+}
+
+.opening-title small {
+  margin-top: 7px;
+  font-size: clamp(.9rem, 4vw, 1.02rem);
+  letter-spacing: .2em;
+}
+
+/* Give the opened composition more vertical room */
+.envelope-scene {
+  bottom: clamp(30px, 4.8vh, 52px);
+  height: min(63vh, 555px);
+  min-height: 430px;
+}
+
+.envelope {
+  bottom: 34px;
+  width: min(82vw, 370px);
+}
+
+/* The flap remains physically visible after opening, like a real opened envelope. */
+.envelope-flap {
+  z-index: 4;
+  transform-origin: 50% 0;
+  backface-visibility: visible;
+  transition: transform .72s cubic-bezier(.2,.72,.18,1), filter .7s ease;
+}
+
+.opening.is-opening .envelope-flap {
+  z-index: 4;
+  transform: scaleY(-1);
+  filter: brightness(.98);
+  transition-delay: .18s;
+}
+
+/* Envelope words and open instruction: readable for older guests */
+.envelope-label {
+  bottom: 25px;
+  font-size: clamp(.86rem, 3.8vw, .98rem);
+  letter-spacing: .19em;
+}
+
+.tap-to-open {
+  bottom: -9px;
+  font-size: clamp(.84rem, 3.8vw, .96rem);
+  font-weight: 600;
+  letter-spacing: .18em;
+}
+
+/* Fan photos: one large hero photo + two clearly visible supporting photos. */
+.photo-card {
+  z-index: 6;
+  width: clamp(108px, 29vw, 142px);
+  padding: 6px 6px 16px;
+  box-shadow: 0 18px 34px rgba(38, 25, 27, .3);
+}
+
+.photo-card img {
+  aspect-ratio: 3 / 4;
+}
+
+.photo-two {
+  z-index: 8;
+  width: clamp(188px, 50vw, 238px);
+  padding: 8px 8px 22px;
+}
+
+/* Main photo rises highest, side photos fan out like the reference. */
+.opening.is-opening .photo-one {
+  z-index: 6;
+  transform: translate(-168%, -112px) rotate(-12deg) scale(.96);
+  transition-delay: .72s;
+}
+
+.opening.is-opening .photo-two {
+  z-index: 8;
+  transform: translate(-50%, -218px) rotate(-1deg) scale(1);
+  transition-delay: .82s;
+}
+
+.opening.is-opening .photo-three {
+  z-index: 7;
+  transform: translate(72%, -137px) rotate(11deg) scale(.96);
+  transition-delay: .94s;
+}
+
+/* Opened-state message: prioritize names + date, sized for 70+ guests. */
+.opened-message {
+  top: clamp(30px, 4.8vh, 54px);
+  width: calc(100% - 36px);
+}
+
+.opened-message p {
+  margin-bottom: 7px;
+  font-size: clamp(1.22rem, 5.6vw, 1.52rem);
+  font-weight: 700;
+  letter-spacing: .14em;
+}
+
+.opened-message strong {
+  font-size: clamp(2.25rem, 10vw, 3rem);
+  font-weight: 600;
+  letter-spacing: .1em;
+  line-height: 1.05;
+}
+
+.opened-message small {
+  margin-top: 10px;
+  font-size: clamp(.95rem, 4.2vw, 1.08rem);
+  font-weight: 600;
+  letter-spacing: .1em;
+  line-height: 1.55;
+}
+
+.scroll-hint {
+  bottom: 11px;
+  font-size: clamp(.82rem, 3.6vw, .94rem);
+  font-weight: 600;
+  letter-spacing: .1em;
+}
+
+.scroll-hint i {
+  margin-top: 3px;
+  font-size: 1.3rem;
+}
+
+/* Small phones: preserve the same visual hierarchy without burying side photos. */
+@media (max-width: 380px) {
+  .opening-title { top: 25px; }
+  .opening-title h1 { font-size: 2.25rem; }
+
+  .envelope-scene {
+    height: 455px;
+    min-height: 420px;
+  }
+
+  .envelope {
+    width: min(84vw, 328px);
+  }
+
+  .photo-card { width: 101px; }
+  .photo-two { width: 182px; }
+
+  .opening.is-opening .photo-one {
+    transform: translate(-160%, -112px) rotate(-11deg) scale(.94);
+  }
+
+  .opening.is-opening .photo-two {
+    transform: translate(-50%, -205px) rotate(-1deg) scale(.98);
+  }
+
+  .opening.is-opening .photo-three {
+    transform: translate(65%, -132px) rotate(10deg) scale(.94);
+  }
+
+  .opened-message {
+    top: 25px;
+  }
+
+  .opened-message small {
+    font-size: .94rem;
+    letter-spacing: .07em;
+  }
+}
+
+@media (max-height: 720px) {
+  .opening-title { top: 18px; }
+  .opened-message { top: 18px; }
+
+  .envelope-scene {
+    bottom: 18px;
+    height: 415px;
+    min-height: 390px;
+  }
+
+  .photo-card { width: 98px; }
+  .photo-two { width: 174px; }
+
+  .opening.is-opening .photo-one {
+    transform: translate(-160%, -92px) rotate(-11deg) scale(.9);
+  }
+
+  .opening.is-opening .photo-two {
+    transform: translate(-50%, -172px) rotate(-1deg) scale(.94);
+  }
+
+  .opening.is-opening .photo-three {
+    transform: translate(62%, -108px) rotate(10deg) scale(.9);
+  }
+
+  .opened-message p { font-size: 1.08rem; }
+  .opened-message strong { font-size: 2.05rem; }
+  .opened-message small { margin-top: 6px; font-size: .82rem; }
+  .scroll-hint { bottom: 4px; font-size: .75rem; }
+}
