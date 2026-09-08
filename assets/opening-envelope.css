@@ -17,9 +17,11 @@
 
 .opening-title {
   z-index: 20;
-  top: clamp(30px, 5.8vh, 62px);
+  top: clamp(28px, 5.4vh, 58px);
   padding: 0 22px;
-  text-shadow: 0 3px 28px rgba(20,13,15,.42);
+  text-shadow:
+    0 2px 10px rgba(24,34,46,.30),
+    0 1px 2px rgba(18,24,32,.20);
   pointer-events: none;
   transition: opacity .7s ease, transform .7s ease;
 }
@@ -27,27 +29,27 @@
 .opening-title .opening-eyebrow {
   margin: 0 0 7px;
   font-family: var(--serif);
-  font-size: clamp(1.02rem, 4.4vw, 1.2rem);
+  font-size: clamp(1.18rem, 4.7vw, 1.32rem);
   font-weight: 500;
-  letter-spacing: .16em;
-  opacity: .94;
+  letter-spacing: .12em;
+  opacity: .96;
 }
 
 .opening-title h1 {
   margin: 0;
   font-family: var(--serif);
-  font-size: clamp(2.65rem, 11.5vw, 3.35rem);
+  font-size: clamp(2.75rem, 11.5vw, 3.25rem);
   font-weight: 600;
-  letter-spacing: .08em;
-  line-height: 1.16;
+  letter-spacing: .07em;
+  line-height: 1.14;
 }
 
 .opening-title .opening-names {
   margin: 11px 0 0;
   font-family: var(--serif);
-  font-size: clamp(1.45rem, 6.2vw, 1.75rem);
+  font-size: clamp(1.55rem, 6.4vw, 1.82rem);
   font-weight: 600;
-  letter-spacing: .1em;
+  letter-spacing: .08em;
 }
 
 .opening-title .opening-names span {
@@ -57,12 +59,12 @@
 
 .opening-title small {
   display: block;
-  margin-top: 7px;
+  margin-top: 8px;
   font-family: var(--script);
-  font-size: clamp(1.2rem, 5.2vw, 1.45rem);
+  font-size: clamp(1.35rem, 5.5vw, 1.55rem);
   font-weight: 600;
-  letter-spacing: .12em;
-  opacity: .96;
+  letter-spacing: .1em;
+  opacity: .98;
 }
 
 .envelope-stage {
@@ -77,6 +79,7 @@
   background: transparent;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .envelope-stage:focus-visible .wax-seal {
@@ -89,8 +92,8 @@
   left: 50%;
   bottom: clamp(34px, 5.5vh, 62px);
   width: min(98%, 530px);
-  height: min(62vh, 535px);
-  min-height: 420px;
+  height: min(63vh, 550px);
+  min-height: 430px;
   transform: translateX(-50%);
   perspective: 1200px;
 }
@@ -177,9 +180,9 @@
   bottom: 26px;
   color: #746358;
   font-family: var(--serif);
-  font-size: clamp(.95rem, 4vw, 1.08rem);
+  font-size: clamp(1rem, 4.2vw, 1.12rem);
   font-weight: 600;
-  letter-spacing: .14em;
+  letter-spacing: .11em;
   transform: translateX(-50%);
   white-space: nowrap;
   transition: opacity .45s ease;
@@ -222,29 +225,34 @@
   z-index: 6;
   left: 50%;
   bottom: 84px;
-  width: clamp(108px, 29vw, 145px);
+  width: clamp(112px, 29.5vw, 148px);
   padding: 7px 7px 20px;
   opacity: 0;
   background: #fffdf9;
   border: 1px solid rgba(100,77,62,.1);
   box-shadow: 0 16px 32px rgba(44,29,30,.26);
   transform: translate(-50%, 48px) scale(.72);
-  will-change: transform, opacity;
+  will-change: transform, opacity, width;
   transition:
     transform 1.08s cubic-bezier(.16,.82,.2,1),
-    opacity .48s ease;
+    opacity .48s ease,
+    width .62s cubic-bezier(.2,.72,.2,1),
+    padding .62s cubic-bezier(.2,.72,.2,1),
+    box-shadow .45s ease;
 }
 
 .photo-card img {
   width: 100%;
   aspect-ratio: 3 / 4;
   object-fit: cover;
+  pointer-events: none;
 }
 
 .photo-two {
   z-index: 8;
-  width: clamp(185px, 50vw, 238px);
-  padding: 8px 8px 23px;
+  width: clamp(205px, 54vw, 255px);
+  padding: 9px 9px 25px;
+  box-shadow: 0 20px 38px rgba(38,25,27,.3);
 }
 
 .tap-to-open {
@@ -252,12 +260,14 @@
   z-index: 30;
   left: 50%;
   bottom: -5px;
-  color: rgba(255,255,255,.97);
+  color: rgba(255,255,255,.98);
   font-family: var(--serif);
-  font-size: clamp(1rem, 4.3vw, 1.12rem);
+  font-size: clamp(1.05rem, 4.5vw, 1.18rem);
   font-weight: 500;
-  letter-spacing: .12em;
-  text-shadow: 0 2px 15px rgba(30,18,21,.55);
+  letter-spacing: .09em;
+  text-shadow:
+    0 2px 10px rgba(24,34,46,.32),
+    0 1px 2px rgba(18,24,32,.2);
   transform: translateX(-50%);
   white-space: nowrap;
   transition: opacity .35s ease, transform .35s ease;
@@ -281,12 +291,14 @@
 .opened-message {
   position: absolute;
   z-index: 25;
-  top: clamp(34px, 5.4vh, 58px);
+  top: clamp(30px, 4.9vh, 54px);
   left: 50%;
   width: calc(100% - 34px);
   color: white;
   text-align: center;
-  text-shadow: 0 3px 24px rgba(22,13,16,.55);
+  text-shadow:
+    0 2px 10px rgba(24,34,46,.30),
+    0 1px 2px rgba(18,24,32,.20);
   opacity: 0;
   pointer-events: none;
   transform: translate(-50%, -8px);
@@ -294,11 +306,11 @@
 }
 
 .opened-message p {
-  margin: 0 0 5px;
+  margin: 0 0 6px;
   font-family: var(--serif);
-  font-size: clamp(1.45rem, 6.2vw, 1.75rem);
+  font-size: clamp(1.6rem, 6.6vw, 1.9rem);
   font-weight: 600;
-  letter-spacing: .08em;
+  letter-spacing: .07em;
 }
 
 .opened-message p span {
@@ -309,21 +321,46 @@
 .opened-message strong {
   display: block;
   font-family: var(--script);
-  font-size: clamp(2.5rem, 10vw, 3rem);
+  font-size: clamp(2.45rem, 10.2vw, 2.85rem);
   font-weight: 600;
-  letter-spacing: .08em;
+  letter-spacing: .07em;
   line-height: 1.06;
 }
 
 .opened-message small {
   display: block;
-  margin-top: 9px;
+  margin-top: 10px;
   font-family: var(--serif);
-  font-size: clamp(1.08rem, 4.6vw, 1.25rem);
+  font-size: clamp(1.18rem, 4.8vw, 1.32rem);
   font-weight: 500;
-  letter-spacing: .04em;
+  letter-spacing: .025em;
   line-height: 1.5;
-  opacity: .96;
+  opacity: .98;
+}
+
+.photo-switch-hint {
+  position: absolute;
+  z-index: 27;
+  top: clamp(154px, 19vh, 190px);
+  left: 50%;
+  color: rgba(255,255,255,.94);
+  font-family: var(--serif);
+  font-size: clamp(.96rem, 3.9vw, 1.06rem);
+  font-weight: 500;
+  letter-spacing: .035em;
+  white-space: nowrap;
+  text-shadow:
+    0 2px 9px rgba(24,34,46,.34),
+    0 1px 2px rgba(18,24,32,.2);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 6px);
+  transition: opacity .45s ease, transform .45s ease;
+}
+
+.photo-switch-hint.visible {
+  opacity: .92;
+  transform: translate(-50%, 0);
 }
 
 .scroll-hint {
@@ -334,11 +371,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: rgba(255,255,255,.94);
-  font-size: clamp(.98rem, 4.1vw, 1.08rem);
+  color: rgba(255,255,255,.96);
+  font-size: clamp(1rem, 4.2vw, 1.1rem);
   font-weight: 500;
-  letter-spacing: .04em;
-  text-shadow: 0 2px 12px rgba(26,16,18,.5);
+  letter-spacing: .03em;
+  text-shadow:
+    0 2px 10px rgba(24,34,46,.38),
+    0 1px 2px rgba(18,24,32,.22);
   opacity: 0;
   pointer-events: none;
   transform: translate(-50%, 8px);
@@ -392,17 +431,17 @@
 }
 
 .opening.is-opening .photo-one {
-  transform: translate(-152%, -156px) rotate(-9deg) scale(.98);
+  transform: translate(-156%, -158px) rotate(-9deg) scale(.98);
   transition-delay: .72s;
 }
 
 .opening.is-opening .photo-two {
-  transform: translate(-50%, -226px) rotate(-1deg) scale(1);
+  transform: translate(-50%, -238px) rotate(-1deg) scale(1);
   transition-delay: .82s;
 }
 
 .opening.is-opening .photo-three {
-  transform: translate(52%, -154px) rotate(9deg) scale(.98);
+  transform: translate(56%, -156px) rotate(9deg) scale(.98);
   transition-delay: .94s;
 }
 
@@ -422,41 +461,55 @@
 }
 
 .opening.reveal-complete .envelope-stage {
-  pointer-events: none;
+  pointer-events: auto;
+  cursor: default;
+}
+
+.opening.reveal-complete .photo-card {
+  pointer-events: auto;
+  cursor: pointer;
+  transition-delay: 0s !important;
+  transition-duration: .62s, .28s, .62s, .62s, .38s;
+}
+
+.opening.reveal-complete .photo-card:active {
+  filter: brightness(.96);
 }
 
 @media (max-height: 740px) {
-  .opening-title { top: 20px; }
-  .opening-title .opening-eyebrow { font-size: .95rem; }
-  .opening-title h1 { font-size: 2.45rem; }
-  .opening-title .opening-names { font-size: 1.3rem; }
-  .opening-title small { font-size: 1.05rem; }
+  .opening-title { top: 18px; }
+  .opening-title .opening-eyebrow { font-size: 1.02rem; }
+  .opening-title h1 { font-size: 2.5rem; }
+  .opening-title .opening-names { font-size: 1.42rem; }
+  .opening-title small { font-size: 1.18rem; }
 
-  .opened-message { top: 18px; }
-  .opened-message p { font-size: 1.3rem; }
-  .opened-message strong { font-size: 2.25rem; }
-  .opened-message small { font-size: 1rem; }
+  .opened-message { top: 16px; }
+  .opened-message p { font-size: 1.4rem; }
+  .opened-message strong { font-size: 2.35rem; }
+  .opened-message small { font-size: 1.04rem; }
+  .photo-switch-hint { top: 142px; font-size: .9rem; }
 
-  .envelope-scene { bottom: 24px; height: 410px; min-height: 385px; }
+  .envelope-scene { bottom: 22px; height: 420px; min-height: 395px; }
   .envelope-back-layer,
   .envelope-front-layer { width: min(76vw, 335px); }
-  .photo-card { width: 105px; }
-  .photo-two { width: 178px; }
-  .opening.is-opening .photo-one { transform: translate(-148%, -112px) rotate(-9deg) scale(.92); }
-  .opening.is-opening .photo-two { transform: translate(-50%, -172px) rotate(-1deg) scale(.95); }
-  .opening.is-opening .photo-three { transform: translate(48%, -110px) rotate(9deg) scale(.92); }
-  .scroll-hint { bottom: 9px; font-size: .9rem; }
+  .photo-card { width: 108px; }
+  .photo-two { width: 192px; }
+  .opening.is-opening .photo-one { transform: translate(-150%, -116px) rotate(-9deg) scale(.92); }
+  .opening.is-opening .photo-two { transform: translate(-50%, -184px) rotate(-1deg) scale(.96); }
+  .opening.is-opening .photo-three { transform: translate(50%, -114px) rotate(9deg) scale(.92); }
+  .scroll-hint { bottom: 8px; font-size: .92rem; }
 }
 
 @media (max-width: 380px) {
   .envelope-scene { width: 100%; }
   .envelope-back-layer,
   .envelope-front-layer { width: 82vw; }
-  .photo-card { width: 101px; }
-  .photo-two { width: 176px; }
-  .opening.is-opening .photo-one { transform: translate(-145%, -142px) rotate(-8deg) scale(.92); }
-  .opening.is-opening .photo-two { transform: translate(-50%, -210px) rotate(-1deg) scale(.97); }
-  .opening.is-opening .photo-three { transform: translate(45%, -140px) rotate(8deg) scale(.92); }
+  .photo-card { width: 105px; }
+  .photo-two { width: 190px; }
+  .opening.is-opening .photo-one { transform: translate(-148%, -144px) rotate(-8deg) scale(.92); }
+  .opening.is-opening .photo-two { transform: translate(-50%, -220px) rotate(-1deg) scale(.98); }
+  .opening.is-opening .photo-three { transform: translate(48%, -142px) rotate(8deg) scale(.92); }
+  .photo-switch-hint { top: 150px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -464,6 +517,7 @@
   .scroll-hint i { animation: none !important; }
   .photo-card,
   .opened-message,
+  .photo-switch-hint,
   .scroll-hint,
   .wax-seal,
   .envelope-flap { transition-duration: .01ms !important; }
