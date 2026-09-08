@@ -11,23 +11,52 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/opening-envelope.css" />
 </head>
 <body class="locked">
   <div class="site-shell">
     <section class="opening" id="top" aria-labelledby="opening-title">
       <img class="opening-photo" src="assets/cover-sky.webp" alt="書平與秋華在藍天下相吻" />
       <div class="opening-wash"></div>
+
       <div class="opening-title reveal-now">
-        <p>You’re Invited</p>
-        <h1 id="opening-title">書平 <span>＆</span> 秋華</h1>
-        <small>2026 · 10 · 09</small>
+        <p class="opening-eyebrow">A WEDDING INVITATION</p>
+        <h1 id="opening-title">You’re Invited</h1>
+        <p class="opening-names">SHUPING &amp; CHIUHUA</p>
+        <small>OCTOBER 9, 2026</small>
       </div>
 
-      <button class="invitation-card" id="open-invitation" type="button" aria-controls="invitation-content" aria-expanded="false">
-        <span class="card-kicker">SAVE THE DATE</span>
-        <strong>平生守護<br />幸芙之華</strong>
-        <span class="card-monogram" aria-hidden="true">S<span>♡</span>C</span>
-        <span class="card-action">輕觸開啟喜帖</span>
+      <button class="envelope-stage" id="open-invitation" type="button" aria-controls="invitation-content" aria-expanded="false" aria-label="Open wedding invitation">
+        <span class="envelope-scene" aria-hidden="true">
+          <span class="envelope-shadow"></span>
+
+          <span class="photo-card photo-one">
+            <img src="assets/portrait-formal.webp" alt="" />
+          </span>
+          <span class="photo-card photo-two">
+            <img src="assets/walk.webp" alt="" />
+          </span>
+          <span class="photo-card photo-three">
+            <img src="assets/hero-watercolor.webp" alt="" />
+          </span>
+
+          <span class="invitation-insert">
+            <span class="invite-kicker">Together with their families</span>
+            <strong>Shuping<br />&amp; Chiuhua</strong>
+            <span class="invite-copy">request the pleasure of your company at their wedding celebration</span>
+            <span class="invite-date">FRIDAY · OCTOBER 9 · 2026</span>
+          </span>
+
+          <span class="envelope">
+            <span class="envelope-back"></span>
+            <span class="envelope-flap"></span>
+            <span class="envelope-front"></span>
+            <span class="envelope-label">WEDDING INVITATION</span>
+            <span class="wax-seal"></span>
+          </span>
+
+          <span class="tap-to-open">Tap to open</span>
+        </span>
       </button>
     </section>
 
