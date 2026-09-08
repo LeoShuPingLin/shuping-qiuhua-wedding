@@ -5,8 +5,16 @@ const opening = document.querySelector('.opening');
 const content = document.querySelector('#invitation-content');
 const openButton = document.querySelector('#open-invitation');
 const floatingLine = document.querySelector('.floating-line');
+const photoCards = Array.from(document.querySelectorAll('.photo-card'));
+
+const photoSwitchHint = document.createElement('div');
+photoSwitchHint.className = 'photo-switch-hint';
+photoSwitchHint.textContent = '輕觸照片可切換';
+photoSwitchHint.setAttribute('aria-hidden', 'true');
+opening.appendChild(photoSwitchHint);
 
 let invitationOpening = false;
+let photoHintTimer;
 
 function updateFloatingLine() {
   if (!opening.classList.contains('reveal-complete')) {
@@ -17,6 +25,33 @@ function updateFloatingLine() {
   const openingBottom = opening.getBoundingClientRect().bottom;
   const revealThreshold = window.innerHeight * 0.25;
   floatingLine.hidden = openingBottom > revealThreshold;
+}
+
+function showPhotoSwitchHint() {
+  clearTimeout(photoHintTimer);
+  photoSwitchHint.classList.add('visible');
+  photoHintTimer = window.setTimeout(() => {
+    photoSwitchHint.classList.remove('visible');
+  }, 3600);
+}
+
+function switchPhotoToCenter(card) {
+  if (!opening.classList.contains('reveal-complete')) return;
+
+  const centerCard = document.querySelector('.photo-card.photo-two');
+  if (!centerCard || card === centerCard) return;
+
+  const sideClass = card.classList.contains('photo-one') ? 'photo-one' : 'photo-three';
+
+  centerCard.classList.remove('photo-two');
+  card.classList.remove(sideClass);
+
+  requestAnimationFrame(() => {
+    centerCard.classList.add(sideClass);
+    card.classList.add('photo-two');
+  });
+
+  photoSwitchHint.classList.remove('visible');
 }
 
 function openInvitation() {
@@ -32,10 +67,22 @@ function openInvitation() {
     content.hidden = false;
     document.body.classList.remove('locked');
     updateFloatingLine();
+    showPhotoSwitchHint();
   }, 1900);
 }
 
-openButton.addEventListener('click', openInvitation);
+openButton.addEventListener('click', (event) => {
+  const tappedPhoto = event.target.closest('.photo-card');
+
+  if (tappedPhoto && opening.classList.contains('reveal-complete')) {
+    event.preventDefault();
+    switchPhotoToCenter(tappedPhoto);
+    return;
+  }
+
+  openInvitation();
+});
+
 window.addEventListener('scroll', updateFloatingLine, { passive: true });
 window.addEventListener('resize', updateFloatingLine);
 
