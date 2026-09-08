@@ -59,8 +59,17 @@ function openInvitation() {
     content.hidden = false;
     document.body.classList.remove('locked');
     updateFloatingLine();
-    showPhotoSwitchHint();
   }, 1900);
+
+  // Once the photos have fully emerged, the envelope becomes a smaller visual base.
+  window.setTimeout(() => {
+    opening.classList.add('envelope-retired');
+  }, 2250);
+
+  // Show the photo interaction hint after the envelope finishes settling down.
+  window.setTimeout(() => {
+    showPhotoSwitchHint();
+  }, 3000);
 }
 
 openButton.addEventListener('click', (event) => {
