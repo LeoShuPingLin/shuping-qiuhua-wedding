@@ -1,0 +1,156 @@
+/* Opening v3: clearer senior-friendly typography + envelope retirement */
+
+/* A subtle lower vignette keeps white helper text readable without looking boxed in. */
+.opening::after {
+  content: "";
+  position: absolute;
+  z-index: 9;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 24%;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(24, 28, 36, 0) 0%,
+    rgba(24, 28, 36, .10) 40%,
+    rgba(24, 28, 36, .30) 100%
+  );
+}
+
+/* First screen: keep the main headline dominant, but make every supporting line easier for older guests. */
+.opening-title .opening-eyebrow {
+  font-size: clamp(1.3rem, 5.3vw, 1.5rem);
+  font-weight: 600;
+  letter-spacing: .09em;
+}
+
+.opening-title .opening-names {
+  font-size: clamp(1.78rem, 7.2vw, 2.08rem);
+  font-weight: 600;
+  letter-spacing: .065em;
+}
+
+.opening-title small {
+  margin-top: 10px;
+  font-size: clamp(1.72rem, 7vw, 2rem);
+  font-weight: 600;
+  letter-spacing: .075em;
+  line-height: 1.05;
+}
+
+.tap-to-open {
+  bottom: -17px;
+  font-size: clamp(1.16rem, 4.9vw, 1.34rem);
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-shadow:
+    0 3px 12px rgba(15, 20, 28, .62),
+    0 1px 3px rgba(15, 20, 28, .52);
+}
+
+.tap-to-open::after {
+  width: 44px;
+  height: 2px;
+  background: rgba(255,255,255,.9);
+  box-shadow: 0 2px 7px rgba(15,20,28,.38);
+}
+
+/* Allow the envelope to finish its role and become a small visual base after the photos emerge. */
+.envelope-back-layer,
+.envelope-front-layer {
+  transition:
+    transform .72s cubic-bezier(.2,.74,.18,1),
+    opacity .65s ease,
+    filter .65s ease;
+  transform-origin: 50% 100%;
+}
+
+.opening.envelope-retired .envelope-back-layer,
+.opening.envelope-retired .envelope-front-layer {
+  transform: translateX(-50%) translateY(84px) scale(.72);
+}
+
+.opening.envelope-retired .envelope-back-layer {
+  filter: drop-shadow(0 12px 18px rgba(35,22,24,.12));
+}
+
+.opening.envelope-retired .envelope-front-layer {
+  opacity: .94;
+}
+
+.opening.envelope-retired .envelope-label {
+  opacity: .12;
+}
+
+.opening.envelope-retired .envelope-shadow {
+  opacity: .45;
+  transform: translateX(-50%) translateY(32px) scale(.72);
+}
+
+/* Keep the photos clearly dominant once the envelope has settled down. */
+.opening.envelope-retired .photo-two {
+  width: clamp(214px, 56vw, 264px);
+  box-shadow: 0 23px 42px rgba(38,25,27,.32);
+}
+
+/* The bottom instruction sits on the darker vignette, away from the ivory envelope. */
+.scroll-hint {
+  bottom: 7px;
+  font-size: clamp(1.05rem, 4.4vw, 1.18rem);
+  font-weight: 700;
+  letter-spacing: .025em;
+  text-shadow:
+    0 3px 12px rgba(15,20,28,.68),
+    0 1px 3px rgba(15,20,28,.56);
+}
+
+.scroll-hint i {
+  margin-top: 4px;
+  font-size: 1.65rem;
+  font-weight: 700;
+  filter: drop-shadow(0 3px 7px rgba(15,20,28,.5));
+}
+
+/* The one-time photo hint should also be legible, but visually secondary. */
+.photo-switch-hint {
+  font-size: clamp(1rem, 4.05vw, 1.12rem);
+  font-weight: 600;
+  text-shadow:
+    0 3px 10px rgba(15,20,28,.52),
+    0 1px 3px rgba(15,20,28,.42);
+}
+
+@media (max-height: 740px) {
+  .opening-title .opening-eyebrow { font-size: 1.1rem; }
+  .opening-title .opening-names { font-size: 1.52rem; }
+  .opening-title small { font-size: 1.42rem; }
+  .tap-to-open { bottom: -13px; font-size: 1.08rem; }
+
+  .opening.envelope-retired .envelope-back-layer,
+  .opening.envelope-retired .envelope-front-layer {
+    transform: translateX(-50%) translateY(66px) scale(.7);
+  }
+
+  .opening.envelope-retired .photo-two { width: 198px; }
+  .scroll-hint { bottom: 3px; font-size: .98rem; }
+}
+
+@media (max-width: 380px) {
+  .opening-title .opening-eyebrow { font-size: 1.15rem; }
+  .opening-title .opening-names { font-size: 1.6rem; }
+  .opening-title small { font-size: 1.5rem; }
+
+  .opening.envelope-retired .envelope-back-layer,
+  .opening.envelope-retired .envelope-front-layer {
+    transform: translateX(-50%) translateY(76px) scale(.7);
+  }
+
+  .opening.envelope-retired .photo-two { width: 200px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .envelope-back-layer,
+  .envelope-front-layer,
+  .envelope-shadow { transition-duration: .01ms !important; }
+}
