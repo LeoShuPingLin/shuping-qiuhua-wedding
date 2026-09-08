@@ -1,5 +1,24 @@
 /* Page flow refinements: schedule -> wedding LINE/reminder -> story/memories -> closing invitation */
 
+/* Make the countdown and schedule feel like two intentional chapters. */
+.schedule {
+  position: relative;
+  border-top: 26px solid var(--paper);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.18);
+}
+
+.schedule::before {
+  content: "";
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  width: 52px;
+  height: 2px;
+  border-radius: 99px;
+  transform: translateX(-50%);
+  background: rgba(145,62,82,.34);
+}
+
 .line-card .line-reminder {
   margin: 22px 0 0;
   padding: 17px 17px 16px;
@@ -30,7 +49,44 @@
   padding-top: 64px;
 }
 
+/* Mobile browsers, especially LINE's in-app browser, leave less usable space around fixed UI. */
+@media (max-width: 560px) {
+  .floating-line {
+    right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    min-height: 46px;
+    max-width: 46vw;
+    padding: 0 16px;
+    font-size: .9rem;
+    white-space: nowrap;
+  }
+}
+
+/* LINE WebView gets an even more compact floating action so it covers less content. */
+.line-in-app .floating-line {
+  right: 10px;
+  bottom: calc(10px + env(safe-area-inset-bottom));
+  min-height: 44px;
+  max-width: 42vw;
+  padding: 0 14px;
+  font-size: .86rem;
+  box-shadow: 0 8px 22px rgba(31,14,21,.22);
+}
+
+.line-in-app .site-shell {
+  width: 100%;
+}
+
 @media (max-width: 430px) {
+  .schedule {
+    border-top-width: 22px;
+  }
+
+  .schedule::before {
+    top: -12px;
+    width: 44px;
+  }
+
   .line-card .line-reminder {
     margin-top: 20px;
     padding: 15px 15px 14px;
