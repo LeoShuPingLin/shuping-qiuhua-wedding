@@ -68,7 +68,7 @@
 
 .opening.envelope-retired .envelope-back-layer,
 .opening.envelope-retired .envelope-front-layer {
-  transform: translateX(-50%) translateY(84px) scale(.72);
+  transform: translateX(-50%) translateY(92px) scale(.67);
 }
 
 .opening.envelope-retired .envelope-back-layer {
@@ -76,22 +76,41 @@
 }
 
 .opening.envelope-retired .envelope-front-layer {
-  opacity: .94;
+  opacity: .92;
 }
 
 .opening.envelope-retired .envelope-label {
-  opacity: .12;
+  opacity: .10;
 }
 
 .opening.envelope-retired .envelope-shadow {
-  opacity: .45;
-  transform: translateX(-50%) translateY(32px) scale(.72);
+  opacity: .40;
+  transform: translateX(-50%) translateY(38px) scale(.68);
 }
 
-/* Keep the photos clearly dominant once the envelope has settled down. */
+/* Photo takeover: while the envelope shrinks, the photos grow and move upward together. */
+.opening.envelope-retired .photo-card {
+  transition:
+    transform .72s cubic-bezier(.2,.74,.18,1),
+    opacity .35s ease,
+    width .72s cubic-bezier(.2,.74,.18,1),
+    padding .72s cubic-bezier(.2,.74,.18,1),
+    box-shadow .5s ease;
+}
+
+.opening.envelope-retired .photo-one {
+  transform: translate(-165%, -178px) rotate(-10deg) scale(1.06);
+}
+
 .opening.envelope-retired .photo-two {
-  width: clamp(214px, 56vw, 264px);
-  box-shadow: 0 23px 42px rgba(38,25,27,.32);
+  width: clamp(228px, 60vw, 280px);
+  padding: 10px 10px 27px;
+  transform: translate(-50%, -264px) rotate(-1deg) scale(1);
+  box-shadow: 0 25px 46px rgba(38,25,27,.34);
+}
+
+.opening.envelope-retired .photo-three {
+  transform: translate(65%, -176px) rotate(10deg) scale(1.06);
 }
 
 /* The bottom instruction sits on the darker vignette, away from the ivory envelope. */
@@ -112,13 +131,18 @@
   filter: drop-shadow(0 3px 7px rgba(15,20,28,.5));
 }
 
-/* The one-time photo hint should also be legible, but visually secondary. */
+/* Photo interaction hint: starts clear, then remains as a subtle persistent cue. */
 .photo-switch-hint {
   font-size: clamp(1rem, 4.05vw, 1.12rem);
   font-weight: 600;
   text-shadow:
     0 3px 10px rgba(15,20,28,.52),
     0 1px 3px rgba(15,20,28,.42);
+}
+
+.photo-switch-hint.settled {
+  opacity: .52;
+  transform: translate(-50%, 0);
 }
 
 @media (max-height: 740px) {
@@ -129,10 +153,22 @@
 
   .opening.envelope-retired .envelope-back-layer,
   .opening.envelope-retired .envelope-front-layer {
-    transform: translateX(-50%) translateY(66px) scale(.7);
+    transform: translateX(-50%) translateY(72px) scale(.66);
   }
 
-  .opening.envelope-retired .photo-two { width: 198px; }
+  .opening.envelope-retired .photo-one {
+    transform: translate(-158%, -132px) rotate(-9deg) scale(.98);
+  }
+
+  .opening.envelope-retired .photo-two {
+    width: 210px;
+    transform: translate(-50%, -205px) rotate(-1deg) scale(1);
+  }
+
+  .opening.envelope-retired .photo-three {
+    transform: translate(58%, -130px) rotate(9deg) scale(.98);
+  }
+
   .scroll-hint { bottom: 3px; font-size: .98rem; }
 }
 
@@ -143,14 +179,26 @@
 
   .opening.envelope-retired .envelope-back-layer,
   .opening.envelope-retired .envelope-front-layer {
-    transform: translateX(-50%) translateY(76px) scale(.7);
+    transform: translateX(-50%) translateY(80px) scale(.66);
   }
 
-  .opening.envelope-retired .photo-two { width: 200px; }
+  .opening.envelope-retired .photo-one {
+    transform: translate(-156%, -160px) rotate(-9deg) scale(.98);
+  }
+
+  .opening.envelope-retired .photo-two {
+    width: 214px;
+    transform: translate(-50%, -238px) rotate(-1deg) scale(1);
+  }
+
+  .opening.envelope-retired .photo-three {
+    transform: translate(56%, -158px) rotate(9deg) scale(.98);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .envelope-back-layer,
   .envelope-front-layer,
-  .envelope-shadow { transition-duration: .01ms !important; }
+  .envelope-shadow,
+  .photo-card { transition-duration: .01ms !important; }
 }
