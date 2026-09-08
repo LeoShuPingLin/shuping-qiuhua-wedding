@@ -1,4 +1,4 @@
-/* Premium opening scene: wax-sealed envelope + photo reveal */
+/* Wedding opening scene: wax-sealed envelope + photo-first reveal */
 .opening {
   min-height: 100svh;
   background: #5e5150;
@@ -11,7 +11,7 @@
 
 .opening-wash {
   background:
-    linear-gradient(180deg, rgba(35, 31, 37, .24) 0%, rgba(35, 28, 31, .05) 35%, rgba(42, 29, 31, .42) 72%, rgba(31, 22, 24, .62) 100%),
+    linear-gradient(180deg, rgba(35, 31, 37, .26) 0%, rgba(35, 28, 31, .07) 34%, rgba(42, 29, 31, .36) 72%, rgba(31, 22, 24, .62) 100%),
     linear-gradient(90deg, rgba(41, 30, 32, .08), transparent 30%, transparent 70%, rgba(41, 30, 32, .08));
 }
 
@@ -21,47 +21,48 @@
   padding: 0 22px;
   text-shadow: 0 3px 28px rgba(20, 13, 15, .42);
   pointer-events: none;
-  transition: opacity .65s ease, transform .65s ease;
+  transition: opacity .7s ease, transform .7s ease;
 }
 
 .opening-title .opening-eyebrow {
-  margin: 0 0 3px;
-  font-family: var(--script);
-  font-size: .7rem;
+  margin: 0 0 6px;
+  font-family: var(--serif);
+  font-size: .78rem;
   font-style: normal;
-  font-weight: 600;
-  letter-spacing: .34em;
-  text-transform: uppercase;
-  opacity: .86;
+  font-weight: 500;
+  letter-spacing: .28em;
+  opacity: .92;
 }
 
 .opening-title h1 {
   margin: 0;
-  font-family: var(--script);
-  font-size: clamp(2.65rem, 11vw, 4rem);
-  font-weight: 500;
-  font-style: italic;
-  letter-spacing: .015em;
-  line-height: 1.02;
+  font-family: var(--serif);
+  font-size: clamp(2rem, 8.8vw, 3rem);
+  font-weight: 600;
+  letter-spacing: .12em;
+  line-height: 1.18;
 }
 
 .opening-title .opening-names {
-  margin: 8px 0 0;
-  font-family: var(--script);
-  font-size: .78rem;
+  margin: 9px 0 0;
+  font-family: var(--serif);
+  font-size: .95rem;
   font-weight: 600;
-  letter-spacing: .26em;
-  text-transform: uppercase;
+  letter-spacing: .2em;
+}
+
+.opening-title .opening-names span {
+  color: #f7d9c2;
 }
 
 .opening-title small {
   display: block;
-  margin-top: 3px;
+  margin-top: 4px;
   font-family: var(--script);
-  font-size: .67rem;
+  font-size: .72rem;
   font-weight: 600;
   letter-spacing: .28em;
-  opacity: .88;
+  opacity: .9;
 }
 
 .envelope-stage {
@@ -76,7 +77,6 @@
   background: transparent;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: opacity .65s ease, transform .65s ease;
 }
 
 .envelope-stage:focus-visible .wax-seal {
@@ -87,10 +87,10 @@
 .envelope-scene {
   position: absolute;
   left: 50%;
-  bottom: clamp(38px, 5.8vh, 62px);
-  width: min(94%, 500px);
-  height: min(56vh, 470px);
-  min-height: 390px;
+  bottom: clamp(32px, 5.3vh, 58px);
+  width: min(96%, 520px);
+  height: min(61vh, 520px);
+  min-height: 410px;
   transform: translateX(-50%);
   perspective: 1200px;
 }
@@ -113,7 +113,7 @@
   z-index: 8;
   left: 50%;
   bottom: 28px;
-  width: min(80vw, 360px);
+  width: min(82vw, 370px);
   aspect-ratio: 1.62 / 1;
   transform: translateX(-50%);
   filter: drop-shadow(0 22px 28px rgba(35, 22, 24, .2));
@@ -165,12 +165,11 @@
   z-index: 14;
   left: 50%;
   bottom: 27px;
-  color: #7a695e;
-  font-family: var(--script);
-  font-size: .62rem;
+  color: #746358;
+  font-family: var(--serif);
+  font-size: .72rem;
   font-weight: 600;
-  letter-spacing: .3em;
-  text-transform: uppercase;
+  letter-spacing: .28em;
   transform: translateX(-50%);
   white-space: nowrap;
   transition: opacity .45s ease;
@@ -208,26 +207,22 @@
   text-shadow: 0 1px rgba(72,43,23,.25);
 }
 
-.photo-card,
-.invitation-insert {
+.photo-card {
   position: absolute;
   z-index: 5;
   left: 50%;
   bottom: 72px;
-  opacity: 0;
-  will-change: transform, opacity;
-  transform: translate(-50%, 44px) scale(.72);
-  transition:
-    transform 1.05s cubic-bezier(.16,.82,.2,1),
-    opacity .48s ease;
-}
-
-.photo-card {
-  width: clamp(92px, 25vw, 122px);
+  width: clamp(94px, 27vw, 136px);
   padding: 6px 6px 18px;
+  opacity: 0;
   background: #fffdf9;
   border: 1px solid rgba(100, 77, 62, .1);
-  box-shadow: 0 14px 28px rgba(44, 29, 30, .24);
+  box-shadow: 0 16px 32px rgba(44, 29, 30, .26);
+  transform: translate(-50%, 46px) scale(.72);
+  will-change: transform, opacity;
+  transition:
+    transform 1.08s cubic-bezier(.16,.82,.2,1),
+    opacity .48s ease;
 }
 
 .photo-card img {
@@ -236,94 +231,22 @@
   object-fit: cover;
 }
 
-.invitation-insert {
-  z-index: 6;
-  width: clamp(176px, 48vw, 225px);
-  min-height: 264px;
-  padding: 25px 18px 22px;
-  color: #6d5c52;
-  background:
-    radial-gradient(rgba(122, 89, 67, .045) .65px, transparent .65px),
-    linear-gradient(145deg, #fffdf8, #f8f0e6);
-  background-size: 6px 6px, auto;
-  border: 1px solid rgba(134, 105, 82, .2);
-  box-shadow: 0 18px 35px rgba(44, 29, 30, .24);
-  font-family: var(--script);
-  text-align: center;
-}
-
-.invitation-insert::before,
-.invitation-insert::after {
-  content: "";
-  position: absolute;
-  width: 24px;
-  height: 24px;
-  border-color: rgba(169, 125, 78, .5);
-}
-
-.invitation-insert::before {
-  top: 9px;
-  left: 9px;
-  border-top: 1px solid;
-  border-left: 1px solid;
-}
-
-.invitation-insert::after {
-  right: 9px;
-  bottom: 9px;
-  border-right: 1px solid;
-  border-bottom: 1px solid;
-}
-
-.invitation-insert .invite-kicker {
-  margin: 0 0 8px;
-  font-size: .55rem;
-  font-weight: 600;
-  letter-spacing: .23em;
-  text-transform: uppercase;
-}
-
-.invitation-insert strong {
-  display: block;
-  margin: 7px -6px 10px;
-  color: #795839;
-  font-size: clamp(1.65rem, 7vw, 2.05rem);
-  font-weight: 500;
-  font-style: italic;
-  line-height: 1.05;
-}
-
-.invitation-insert .invite-copy {
-  margin: 0 auto;
-  max-width: 170px;
-  font-size: .62rem;
-  font-weight: 600;
-  line-height: 1.55;
-  letter-spacing: .09em;
-  text-transform: uppercase;
-}
-
-.invitation-insert .invite-date {
-  display: block;
-  margin-top: 16px;
-  padding-top: 12px;
-  border-top: 1px solid rgba(127, 97, 73, .22);
-  font-size: .62rem;
-  font-weight: 600;
-  letter-spacing: .18em;
+.photo-two {
+  z-index: 7;
+  width: clamp(170px, 48vw, 230px);
+  padding: 8px 8px 22px;
 }
 
 .tap-to-open {
   position: absolute;
   z-index: 30;
   left: 50%;
-  bottom: -8px;
-  color: rgba(255,255,255,.94);
-  font-family: var(--script);
-  font-size: .65rem;
-  font-weight: 600;
-  letter-spacing: .3em;
-  text-transform: uppercase;
+  bottom: -7px;
+  color: rgba(255,255,255,.96);
+  font-family: var(--serif);
+  font-size: .76rem;
+  font-weight: 500;
+  letter-spacing: .25em;
   text-shadow: 0 2px 15px rgba(30,18,21,.55);
   transform: translateX(-50%);
   white-space: nowrap;
@@ -336,7 +259,7 @@
   display: block;
   width: 35px;
   height: 1px;
-  margin: 6px auto 0;
+  margin: 7px auto 0;
   background: rgba(255,255,255,.72);
 }
 
@@ -345,10 +268,88 @@
   50% { opacity: 1; transform: translateX(-50%) translateY(-3px); }
 }
 
+.opened-message {
+  position: absolute;
+  z-index: 25;
+  top: clamp(42px, 6.5vh, 72px);
+  left: 50%;
+  width: calc(100% - 42px);
+  color: white;
+  text-align: center;
+  text-shadow: 0 3px 24px rgba(22, 13, 16, .52);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -8px);
+  transition: opacity .75s ease, transform .75s ease;
+}
+
+.opened-message p {
+  margin: 0 0 3px;
+  font-family: var(--serif);
+  font-size: clamp(1rem, 4.5vw, 1.28rem);
+  font-weight: 600;
+  letter-spacing: .17em;
+}
+
+.opened-message p span {
+  color: #f7d9c2;
+  margin: 0 .28em;
+}
+
+.opened-message strong {
+  display: block;
+  font-family: var(--script);
+  font-size: clamp(1.65rem, 7.5vw, 2.35rem);
+  font-weight: 600;
+  letter-spacing: .14em;
+  line-height: 1.05;
+}
+
+.opened-message small {
+  display: block;
+  margin-top: 7px;
+  font-family: var(--serif);
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .16em;
+  opacity: .9;
+}
+
+.scroll-hint {
+  position: absolute;
+  z-index: 26;
+  left: 50%;
+  bottom: 13px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  color: rgba(255,255,255,.88);
+  font-size: .66rem;
+  letter-spacing: .16em;
+  text-shadow: 0 2px 12px rgba(26,16,18,.48);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 8px);
+  transition: opacity .65s ease, transform .65s ease;
+}
+
+.scroll-hint i {
+  font-size: 1rem;
+  font-style: normal;
+  line-height: 1.1;
+  animation: scrollHint 1.7s ease-in-out infinite;
+}
+
+@keyframes scrollHint {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(4px); }
+}
+
 /* Opening choreography */
 .opening.is-opening .opening-title {
-  opacity: .78;
-  transform: translateY(-5px);
+  opacity: 0;
+  transform: translateY(-12px);
 }
 
 .opening.is-opening .tap-to-open {
@@ -370,71 +371,76 @@
 }
 
 .opening.is-opening .envelope-label {
-  opacity: .3;
+  opacity: .26;
 }
 
-.opening.is-opening .photo-card,
-.opening.is-opening .invitation-insert {
+.opening.is-opening .photo-card {
   opacity: 1;
 }
 
 .opening.is-opening .photo-one {
-  transform: translate(-142%, -112px) rotate(-11deg) scale(.91);
-  transition-delay: .7s;
+  transform: translate(-138%, -144px) rotate(-10deg) scale(.95);
+  transition-delay: .72s;
 }
 
 .opening.is-opening .photo-two {
-  transform: translate(-88%, -192px) rotate(4deg) scale(.9);
-  transition-delay: .84s;
+  transform: translate(-50%, -212px) rotate(-1deg) scale(1);
+  transition-delay: .82s;
 }
 
 .opening.is-opening .photo-three {
-  transform: translate(39%, -118px) rotate(12deg) scale(.92);
-  transition-delay: .98s;
-}
-
-.opening.is-opening .invitation-insert {
-  transform: translate(-50%, -137px) rotate(-1.3deg) scale(.92);
-  transition-delay: 1.08s;
+  transform: translate(38%, -142px) rotate(10deg) scale(.96);
+  transition-delay: .94s;
 }
 
 .opening.is-opening .envelope-shadow {
-  opacity: .8;
-  transform: translateX(-50%) scale(.94);
+  opacity: .82;
+  transform: translateX(-50%) scale(.95);
 }
 
-.opening.opened .envelope-stage {
-  opacity: 0;
-  transform: translateY(-12px);
+.opening.reveal-complete .opened-message {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.opening.reveal-complete .scroll-hint {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.opening.reveal-complete .envelope-stage {
   pointer-events: none;
 }
 
 @media (max-height: 720px) {
-  .opening-title { top: 26px; }
-  .opening-title h1 { font-size: 2.45rem; }
-  .envelope-scene { bottom: 24px; height: 390px; }
-  .envelope { width: min(72vw, 330px); }
-  .opening.is-opening .photo-one { transform: translate(-142%, -94px) rotate(-11deg) scale(.84); }
-  .opening.is-opening .photo-two { transform: translate(-88%, -160px) rotate(4deg) scale(.83); }
-  .opening.is-opening .photo-three { transform: translate(39%, -98px) rotate(12deg) scale(.85); }
-  .opening.is-opening .invitation-insert { transform: translate(-50%, -116px) rotate(-1.3deg) scale(.84); }
+  .opening-title { top: 24px; }
+  .opening-title h1 { font-size: 2rem; }
+  .opened-message { top: 24px; }
+  .envelope-scene { bottom: 22px; height: 405px; min-height: 380px; }
+  .envelope { width: min(74vw, 330px); }
+  .photo-two { width: clamp(150px, 43vw, 205px); }
+  .opening.is-opening .photo-one { transform: translate(-136%, -112px) rotate(-10deg) scale(.9); }
+  .opening.is-opening .photo-two { transform: translate(-50%, -170px) rotate(-1deg) scale(.94); }
+  .opening.is-opening .photo-three { transform: translate(35%, -110px) rotate(10deg) scale(.91); }
+  .scroll-hint { bottom: 7px; }
 }
 
 @media (max-width: 380px) {
   .envelope-scene { width: 100%; }
-  .photo-card { width: 91px; }
-  .invitation-insert { width: 175px; min-height: 244px; padding-top: 22px; }
-  .opening.is-opening .photo-one { transform: translate(-135%, -104px) rotate(-10deg) scale(.85); }
-  .opening.is-opening .photo-two { transform: translate(-85%, -176px) rotate(4deg) scale(.84); }
-  .opening.is-opening .photo-three { transform: translate(34%, -106px) rotate(11deg) scale(.85); }
+  .photo-card { width: 94px; }
+  .photo-two { width: 170px; }
+  .opening.is-opening .photo-one { transform: translate(-132%, -132px) rotate(-9deg) scale(.9); }
+  .opening.is-opening .photo-two { transform: translate(-50%, -198px) rotate(-1deg) scale(.96); }
+  .opening.is-opening .photo-three { transform: translate(33%, -130px) rotate(9deg) scale(.91); }
+  .opened-message small { font-size: .66rem; letter-spacing: .11em; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tap-to-open { animation: none; }
-  .envelope-flap,
-  .wax-seal,
+  .tap-to-open,
+  .scroll-hint i { animation: none !important; }
   .photo-card,
-  .invitation-insert,
-  .envelope-stage,
-  .opening-title { transition-duration: .01ms !important; transition-delay: 0ms !important; }
+  .opened-message,
+  .scroll-hint,
+  .wax-seal,
+  .envelope-flap { transition-duration: .01ms !important; }
 }
