@@ -14,20 +14,16 @@ function openInvitation() {
 
   openButton.setAttribute('aria-expanded', 'true');
   opening.classList.add('is-opening');
-  document.body.classList.remove('locked');
 
   window.setTimeout(() => {
+    opening.classList.add('reveal-complete');
     content.hidden = false;
-  }, 1650);
-
-  window.setTimeout(() => {
-    opening.classList.add('opened');
-    content.scrollIntoView({ behavior: 'smooth' });
-  }, 2450);
+    document.body.classList.remove('locked');
+  }, 1900);
 
   window.setTimeout(() => {
     floatingLine.hidden = false;
-  }, 3050);
+  }, 2600);
 }
 
 openButton.addEventListener('click', openInvitation);
