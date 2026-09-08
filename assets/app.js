@@ -26,12 +26,15 @@ function updateFloatingLine() {
   floatingLine.hidden = openingBottom > revealThreshold;
 }
 
-function showPhotoSwitchHint() {
+function showPhotoSwitchHint(duration = 5200) {
   clearTimeout(photoHintTimer);
+  photoSwitchHint.classList.remove('settled');
   photoSwitchHint.classList.add('visible');
+
   photoHintTimer = window.setTimeout(() => {
     photoSwitchHint.classList.remove('visible');
-  }, 3600);
+    photoSwitchHint.classList.add('settled');
+  }, duration);
 }
 
 function switchPhotoToCenter(card) {
@@ -43,7 +46,9 @@ function switchPhotoToCenter(card) {
   const sideClass = card.classList.contains('photo-one') ? 'photo-one' : 'photo-three';
   centerCard.classList.replace('photo-two', sideClass);
   card.classList.replace(sideClass, 'photo-two');
-  photoSwitchHint.classList.remove('visible');
+
+  // Briefly re-emphasize the interaction cue, then return it to its subtle persistent state.
+  showPhotoSwitchHint(1400);
 }
 
 function openInvitation() {
@@ -61,12 +66,12 @@ function openInvitation() {
     updateFloatingLine();
   }, 1900);
 
-  // Once the photos have fully emerged, the envelope becomes a smaller visual base.
+  // Once the photos have fully emerged, the envelope shrinks as the photos take over the composition.
   window.setTimeout(() => {
     opening.classList.add('envelope-retired');
   }, 2250);
 
-  // Show the photo interaction hint after the envelope finishes settling down.
+  // Show the photo interaction hint after the envelope and photos finish settling.
   window.setTimeout(() => {
     showPhotoSwitchHint();
   }, 3000);
