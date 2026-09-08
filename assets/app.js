@@ -9,6 +9,23 @@ const content = document.querySelector('#invitation-content');
 const openButton = document.querySelector('#open-invitation');
 const floatingLine = document.querySelector('.floating-line');
 
+function syncWeddingLineLinks() {
+  document.querySelectorAll('.line-button, [data-line-link]').forEach((element) => {
+    if (element.tagName === 'A') {
+      element.href = WEDDING_CONFIG.lineFriendUrl;
+      element.target = '_blank';
+      element.rel = 'noopener';
+      return;
+    }
+
+    element.addEventListener('click', () => {
+      window.open(WEDDING_CONFIG.lineFriendUrl, '_blank', 'noopener');
+    });
+  });
+}
+
+syncWeddingLineLinks();
+
 function getSafeRecipient(value) {
   if (!value) return '';
   return value.replace(/[\r\n\t]+/g, ' ').replace(/\s{2,}/g, ' ').trim().slice(0, 30);
@@ -145,8 +162,6 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, { threshold: .12 });
 document.querySelectorAll('.reveal').forEach((element) => observer.observe(element));
-
-floatingLine.addEventListener('click', () => window.open(WEDDING_CONFIG.lineFriendUrl, '_blank', 'noopener'));
 
 const events = {
   ceremony: {
