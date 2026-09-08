@@ -1,8 +1,3 @@
-const openingV2Styles = document.createElement('link');
-openingV2Styles.rel = 'stylesheet';
-openingV2Styles.href = 'assets/opening-envelope-v2.css?v=20260908-2';
-document.head.appendChild(openingV2Styles);
-
 const WEDDING_CONFIG = { lineFriendUrl: 'https://lin.ee/Stg17uT' };
 
 const weddingStart = new Date('2026-10-09T14:00:00+08:00');
@@ -13,25 +8,36 @@ const floatingLine = document.querySelector('.floating-line');
 
 let invitationOpening = false;
 
+function updateFloatingLine() {
+  if (!opening.classList.contains('reveal-complete')) {
+    floatingLine.hidden = true;
+    return;
+  }
+
+  const openingBottom = opening.getBoundingClientRect().bottom;
+  const revealThreshold = window.innerHeight * 0.25;
+  floatingLine.hidden = openingBottom > revealThreshold;
+}
+
 function openInvitation() {
   if (invitationOpening) return;
   invitationOpening = true;
 
   openButton.setAttribute('aria-expanded', 'true');
   opening.classList.add('is-opening');
+  floatingLine.hidden = true;
 
   window.setTimeout(() => {
     opening.classList.add('reveal-complete');
     content.hidden = false;
     document.body.classList.remove('locked');
+    updateFloatingLine();
   }, 1900);
-
-  window.setTimeout(() => {
-    floatingLine.hidden = false;
-  }, 2600);
 }
 
 openButton.addEventListener('click', openInvitation);
+window.addEventListener('scroll', updateFloatingLine, { passive: true });
+window.addEventListener('resize', updateFloatingLine);
 
 function updateCountdown() {
   const diff = weddingStart.getTime() - Date.now();
