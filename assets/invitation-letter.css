@@ -1,0 +1,103 @@
+/* Invitation letter inside the main wedding-day section */
+.wedding-letter {
+  position: relative;
+  max-width: 440px;
+  margin: 44px auto 0;
+  padding: 38px 8px 42px;
+  text-align: left;
+  color: var(--ink);
+  border-top: 1px solid rgba(145, 62, 82, .18);
+  border-bottom: 1px solid rgba(145, 62, 82, .18);
+}
+
+.wedding-letter::before {
+  content: "♡";
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  padding: 0 13px;
+  color: #c78394;
+  background: var(--paper);
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  transform: translateX(-50%);
+}
+
+.wedding-letter .letter-greeting {
+  margin: 0 0 16px;
+  color: var(--rose);
+  font-family: var(--script);
+  font-size: clamp(1.9rem, 8vw, 2.35rem);
+  font-style: italic;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.wedding-letter .letter-lead {
+  margin: 0 0 24px;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: clamp(1.25rem, 5.3vw, 1.5rem);
+  font-weight: 700;
+  letter-spacing: .04em;
+  line-height: 1.55;
+}
+
+.wedding-letter .letter-body {
+  margin: 0 0 22px;
+  color: #66565b;
+  font-family: var(--serif);
+  font-size: clamp(1.08rem, 4.45vw, 1.2rem);
+  font-weight: 500;
+  letter-spacing: .015em;
+  line-height: 2;
+}
+
+.wedding-letter .letter-highlight {
+  position: relative;
+  margin: 28px 0;
+  padding: 18px 16px 18px 20px;
+  color: var(--rose-deep);
+  background: linear-gradient(90deg, rgba(145, 62, 82, .075), rgba(145, 62, 82, .015));
+  border-left: 3px solid rgba(145, 62, 82, .42);
+  font-family: var(--serif);
+  font-size: clamp(1.12rem, 4.65vw, 1.26rem);
+  font-weight: 700;
+  line-height: 1.8;
+}
+
+.wedding-letter .letter-signature {
+  margin: 30px 2px 0;
+  color: var(--rose);
+  font-family: var(--serif);
+  font-size: clamp(1.18rem, 4.8vw, 1.34rem);
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-align: right;
+}
+
+.wedding-letter .letter-signature span {
+  margin: 0 .28em;
+  color: #c78394;
+}
+
+/* Keep the countdown visually attached to this same section. */
+.portrait-intro .countdown {
+  margin-top: 48px;
+}
+
+@media (max-width: 380px) {
+  .wedding-letter {
+    margin-top: 38px;
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .wedding-letter .letter-body {
+    line-height: 1.9;
+  }
+
+  .wedding-letter .letter-highlight {
+    padding-left: 16px;
+  }
+}
