@@ -1,3 +1,8 @@
+const openingV2Styles = document.createElement('link');
+openingV2Styles.rel = 'stylesheet';
+openingV2Styles.href = 'assets/opening-envelope-v2.css?v=20260908-2';
+document.head.appendChild(openingV2Styles);
+
 const WEDDING_CONFIG = { lineFriendUrl: 'https://lin.ee/Stg17uT' };
 
 const weddingStart = new Date('2026-10-09T14:00:00+08:00');
