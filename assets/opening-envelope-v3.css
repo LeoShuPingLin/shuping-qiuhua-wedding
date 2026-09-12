@@ -207,6 +207,7 @@
 .wax-seal {
   width: 84px;
   height: 84px;
+  top: calc(43% + 10px);
   color: transparent;
   border-radius: 0;
   background: transparent url("wax-seal-corgi.webp") center / contain no-repeat;
