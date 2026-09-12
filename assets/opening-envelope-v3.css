@@ -202,3 +202,16 @@
   .envelope-shadow,
   .photo-card { transition-duration: .01ms !important; }
 }
+
+/* Q版柯基封蠟貼紙（僅覆寫封蠟圖案） */
+.wax-seal {
+  color: transparent;
+  border-radius: 0;
+  background: transparent url("wax-seal-corgi.webp") center / contain no-repeat;
+  box-shadow: none;
+  filter: drop-shadow(0 7px 9px rgba(61, 34, 19, .30));
+}
+
+.wax-seal::before {
+  content: none;
+}
