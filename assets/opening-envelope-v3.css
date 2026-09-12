@@ -205,6 +205,8 @@
 
 /* Q版柯基封蠟貼紙（僅覆寫封蠟圖案） */
 .wax-seal {
+  width: 84px;
+  height: 84px;
   color: transparent;
   border-radius: 0;
   background: transparent url("wax-seal-corgi.webp") center / contain no-repeat;
