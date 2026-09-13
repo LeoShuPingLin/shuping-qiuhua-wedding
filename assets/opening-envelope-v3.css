@@ -273,3 +273,27 @@
 .photo-switch-hint.settled {
   opacity: .5;
 }
+
+/* Desktop opened-photo spacing and hint placement */
+@media (min-width: 700px) {
+  .opened-message {
+    top: clamp(18px, 3vh, 30px);
+  }
+
+  .opened-message .opened-lead {
+    margin-bottom: 2px;
+    line-height: 1.22;
+  }
+
+  .opened-message .opened-couple-line {
+    line-height: 1.08;
+  }
+
+  .photo-switch-hint,
+  .photo-switch-hint.visible,
+  .photo-switch-hint.settled {
+    top: 42%;
+    right: auto;
+    left: calc(50% + 170px);
+  }
+}
