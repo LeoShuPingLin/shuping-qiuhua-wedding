@@ -210,3 +210,33 @@
   text-align: left;
   line-height: 1.9;
 }
+
+/* Final invitation photo and moved wedding date */
+.invitation-photo {
+  width: min(100%, 390px);
+  margin: 32px auto 24px;
+  padding: 9px 9px 18px;
+  background: #fffdf9;
+  border: 1px solid rgba(100, 77, 62, .1);
+  box-shadow: 0 18px 40px rgba(52, 34, 40, .16);
+  transform: rotate(-.5deg);
+}
+
+.invitation-photo img {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+}
+
+.invitation-photo figcaption {
+  margin-top: 14px;
+  color: var(--rose);
+  font-family: var(--script);
+  font-size: clamp(1.28rem, 5.2vw, 1.55rem);
+  font-weight: 600;
+  letter-spacing: .14em;
+}
+
+.invitation-copy .signature {
+  margin-top: 24px;
+}
