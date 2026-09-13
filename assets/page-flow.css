@@ -240,3 +240,38 @@
 .invitation-copy .signature {
   margin-top: 24px;
 }
+
+/* Merge the standalone footer into the photo invitation page. */
+.invitation-ending {
+  margin-top: 26px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(138, 62, 80, .2);
+  text-align: center;
+}
+
+.invitation-ending > .script {
+  margin: 0;
+  color: var(--rose);
+  font-size: clamp(2rem, 8vw, 2.7rem);
+  font-style: italic;
+  line-height: 1;
+}
+
+.invitation-ending .signature {
+  margin-top: 18px;
+}
+
+.invitation-see-you {
+  margin: 16px 0 0;
+  color: var(--muted);
+}
+
+.invitation-back-to-top {
+  display: inline-block;
+  margin-top: 26px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid rgba(69, 45, 52, .35);
+  color: var(--ink);
+  font-size: .9rem;
+  font-weight: 600;
+}
