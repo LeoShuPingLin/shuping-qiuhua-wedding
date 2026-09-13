@@ -204,3 +204,9 @@
     padding-top: 56px;
   }
 }
+
+/* Keep the longer memory paragraph easy to scan. */
+.memory-copy > p {
+  text-align: left;
+  line-height: 1.9;
+}
