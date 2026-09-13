@@ -159,6 +159,14 @@ img { display: block; max-width: 100%; }
 .ticket-number { position: absolute; top: 16px; right: 20px; color: rgba(145,62,82,.15); font-family: var(--script); font-size: 4rem; line-height: 1; }
 .event-ticket > p { margin: 0; color: var(--rose); font-size: .78rem; font-weight: 700; letter-spacing: .15em; }
 .event-ticket h3 { position: relative; margin: 7px 0 16px; padding-right: 45px; font-family: var(--serif); font-size: 1.5rem; }
+.ticket-date {
+  margin: -5px 0 10px;
+  color: var(--rose);
+  font-family: var(--script);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: .14em;
+}
 .ticket-time { margin-bottom: 13px; color: var(--muted); font-size: .9rem; }
 .ticket-time strong { color: var(--ink); font-size: 1.05rem; }
 address { min-height: 62px; color: var(--muted); font-size: .9rem; font-style: normal; }
