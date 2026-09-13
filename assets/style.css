@@ -3,6 +3,9 @@
   --muted: #78686d;
   --rose: #913e52;
   --rose-deep: #6d293b;
+  --wood: #584a44;
+  --wood-deep: #403632;
+  --wood-accent: #d8b892;
   --blush: #ead4da;
   --paper: #fffaf7;
   --blue: #cdd9e8;
@@ -97,7 +100,18 @@ img { display: block; max-width: 100%; }
 .hero-polaroid img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: center 42%; }
 .hero-polaroid p { margin: 14px 0 0; text-align: center; font-family: var(--serif); letter-spacing: .12em; }
 
-.countdown { margin: 48px -28px -82px; padding: 30px 22px 34px; color: white; text-align: center; background: var(--rose-deep); }
+.countdown {
+  margin: 48px -28px -82px;
+  padding: 30px 22px 34px;
+  color: white;
+  text-align: center;
+  background-color: var(--wood);
+  background-image:
+    linear-gradient(145deg, rgba(74, 61, 56, .70), rgba(55, 45, 42, .77)),
+    url("walnut-cocoa-texture.webp");
+  background-position: center;
+  background-size: cover;
+}
 .countdown > p { margin: 0 0 14px; font-family: var(--serif); letter-spacing: .12em; }
 .countdown > div { display: flex; justify-content: center; align-items: flex-start; gap: 13px; }
 .countdown span { min-width: 66px; display: flex; flex-direction: column; }
@@ -127,7 +141,16 @@ img { display: block; max-width: 100%; }
 .signature { margin-top: 30px; color: var(--rose); font-family: var(--serif); font-size: 1.2rem; letter-spacing: .18em; }
 .signature span { margin: 0 9px; }
 
-.rose-section { padding: 82px 24px; color: white; background: linear-gradient(155deg, #753247, #512635); }
+.rose-section {
+  padding: 82px 24px;
+  color: white;
+  background-color: var(--wood);
+  background-image:
+    linear-gradient(145deg, rgba(74, 61, 56, .70), rgba(55, 45, 42, .77)),
+    url("walnut-cocoa-texture.webp");
+  background-position: center;
+  background-size: cover;
+}
 .section-label { margin: 0 0 8px; font-size: .72rem; font-weight: 700; letter-spacing: .24em; }
 .rose-section > h2, .line-card h2 { margin: 0 0 8px; font-family: var(--serif); font-size: 2.3rem; letter-spacing: .08em; }
 .section-intro { margin: 0 0 32px; color: rgba(255,255,255,.72); }
@@ -153,12 +176,44 @@ address { min-height: 62px; color: var(--muted); font-size: .9rem; font-style: n
 
 .line-section { min-height: 780px; position: relative; display: flex; align-items: flex-end; isolation: isolate; padding: 36px 24px 50px; overflow: hidden; color: white; }
 .line-section > img { position: absolute; z-index: -3; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }
-.line-overlay { position: absolute; z-index: -2; inset: 0; background: linear-gradient(180deg, rgba(39,41,52,.05) 35%, rgba(53,26,36,.85) 100%); }
-.line-card { width: 100%; padding: 31px 26px; background: rgba(81, 38, 53, .86); border: 1px solid rgba(255,255,255,.28); backdrop-filter: blur(10px); }
+.line-overlay { position: absolute; z-index: -2; inset: 0; background: linear-gradient(180deg, rgba(39,41,52,.05) 35%, rgba(58,45,40,.86) 100%); }
+.line-card {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  padding: 31px 26px;
+  overflow: hidden;
+  background: rgba(64, 54, 50, .88);
+  border: 1px solid rgba(255,255,255,.28);
+  backdrop-filter: blur(10px);
+}
+.line-card::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background: url("walnut-cocoa-texture.webp") center / cover no-repeat;
+  opacity: .12;
+  pointer-events: none;
+}
+.line-card > * {
+  position: relative;
+  z-index: 1;
+}
 .line-card > p:not(.section-label) { color: rgba(255,255,255,.78); }
 .line-button { min-height: 52px; margin-top: 8px; display: flex; align-items: center; justify-content: center; border-radius: 99px; color: var(--rose-deep); background: white; font-weight: 700; box-shadow: 0 13px 32px rgba(27,13,17,.25); }
 
-footer { padding: 74px 24px 96px; text-align: center; color: white; background: #34292c; }
+footer {
+  padding: 74px 24px 96px;
+  text-align: center;
+  color: white;
+  background-color: var(--wood-deep);
+  background-image:
+    linear-gradient(145deg, rgba(74, 61, 56, .72), rgba(55, 45, 42, .82)),
+    url("walnut-cocoa-texture.webp");
+  background-position: center;
+  background-size: cover;
+}
 footer .script { color: #e6afbc; }
 footer h2 { margin: 12px 0 7px; font-family: var(--serif); font-size: 2rem; letter-spacing: .1em; }
 footer h2 span { color: #efbdc8; }
