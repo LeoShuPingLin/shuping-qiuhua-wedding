@@ -218,3 +218,58 @@
 .wax-seal::before {
   content: none;
 }
+
+/* Opened photo page: two-line message and side hint */
+.opened-message .opened-lead {
+  margin: 0 0 9px;
+  font-family: var(--serif);
+  font-size: clamp(1.18rem, 4.8vw, 1.38rem);
+  font-weight: 600;
+  letter-spacing: .04em;
+  line-height: 1.4;
+}
+
+.opened-message .opened-couple-line {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  margin: 0;
+  font-size: clamp(1.48rem, 6.1vw, 1.78rem);
+  white-space: nowrap;
+}
+
+.opened-message .opened-couple-line strong {
+  display: inline;
+  margin-left: .65em;
+  font-family: var(--script);
+  font-size: clamp(1.25rem, 5vw, 1.5rem);
+  font-weight: 600;
+  letter-spacing: .055em;
+  line-height: 1;
+}
+
+.photo-switch-hint,
+.photo-switch-hint.visible,
+.photo-switch-hint.settled {
+  top: 50%;
+  right: clamp(8px, 3vw, 16px);
+  left: auto;
+  padding: 10px 6px;
+  border: 1px solid rgba(255, 255, 255, .34);
+  border-radius: 999px;
+  background: rgba(35, 29, 32, .22);
+  font-size: clamp(.82rem, 3.3vw, .95rem);
+  letter-spacing: .1em;
+  line-height: 1;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  transform: translateY(-50%);
+}
+
+.photo-switch-hint.visible {
+  opacity: .9;
+}
+
+.photo-switch-hint.settled {
+  opacity: .5;
+}
