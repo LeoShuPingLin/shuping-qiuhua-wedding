@@ -3,9 +3,9 @@
   --muted: #78686d;
   --rose: #913e52;
   --rose-deep: #6d293b;
-  --wood: #584a44;
-  --wood-deep: #403632;
-  --wood-accent: #d8b892;
+  --wood: #765a48;
+  --wood-deep: #5a4034;
+  --wood-accent: #e0bd92;
   --blush: #ead4da;
   --paper: #fffaf7;
   --blue: #cdd9e8;
@@ -107,7 +107,7 @@ img { display: block; max-width: 100%; }
   text-align: center;
   background-color: var(--wood);
   background-image:
-    linear-gradient(145deg, rgba(74, 61, 56, .70), rgba(55, 45, 42, .77)),
+    linear-gradient(145deg, rgba(111, 78, 60, .50), rgba(78, 54, 45, .62)),
     url("walnut-cocoa-texture.webp");
   background-position: center;
   background-size: cover;
@@ -146,7 +146,7 @@ img { display: block; max-width: 100%; }
   color: white;
   background-color: var(--wood);
   background-image:
-    linear-gradient(145deg, rgba(74, 61, 56, .70), rgba(55, 45, 42, .77)),
+    linear-gradient(145deg, rgba(111, 78, 60, .50), rgba(78, 54, 45, .62)),
     url("walnut-cocoa-texture.webp");
   background-position: center;
   background-size: cover;
@@ -176,14 +176,14 @@ address { min-height: 62px; color: var(--muted); font-size: .9rem; font-style: n
 
 .line-section { min-height: 780px; position: relative; display: flex; align-items: flex-end; isolation: isolate; padding: 36px 24px 50px; overflow: hidden; color: white; }
 .line-section > img { position: absolute; z-index: -3; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }
-.line-overlay { position: absolute; z-index: -2; inset: 0; background: linear-gradient(180deg, rgba(39,41,52,.05) 35%, rgba(58,45,40,.86) 100%); }
+.line-overlay { position: absolute; z-index: -2; inset: 0; background: linear-gradient(180deg, rgba(39,41,52,.05) 35%, rgba(91,64,52,.82) 100%); }
 .line-card {
   position: relative;
   isolation: isolate;
   width: 100%;
   padding: 31px 26px;
   overflow: hidden;
-  background: rgba(64, 54, 50, .88);
+  background: rgba(94, 68, 57, .86);
   border: 1px solid rgba(255,255,255,.28);
   backdrop-filter: blur(10px);
 }
@@ -193,7 +193,7 @@ address { min-height: 62px; color: var(--muted); font-size: .9rem; font-style: n
   z-index: 0;
   inset: 0;
   background: url("walnut-cocoa-texture.webp") center / cover no-repeat;
-  opacity: .12;
+  opacity: .10;
   pointer-events: none;
 }
 .line-card > * {
@@ -209,7 +209,7 @@ footer {
   color: white;
   background-color: var(--wood-deep);
   background-image:
-    linear-gradient(145deg, rgba(74, 61, 56, .72), rgba(55, 45, 42, .82)),
+    linear-gradient(145deg, rgba(111, 78, 60, .54), rgba(78, 54, 45, .68)),
     url("walnut-cocoa-texture.webp");
   background-position: center;
   background-size: cover;
