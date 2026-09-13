@@ -126,11 +126,11 @@
 }
 
 /* The story, memory collage and final invitation now read as one closing emotional chapter. */
-.scrapbook + .memory-collage {
+.memory-collage + .scrapbook {
   border-top: 0;
 }
 
-.memory-collage + .invitation-copy {
+.scrapbook + .invitation-copy {
   padding-top: 64px;
 }
 
