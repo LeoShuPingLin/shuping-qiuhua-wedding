@@ -95,22 +95,16 @@
     </section>
     <section class="transport-panel" id="transport-panel" aria-live="polite" hidden>
       <div class="venue-summary"><div><p class="kicker" id="venue-kicker"></p><h2 id="venue-title"></h2><p id="venue-time"></p></div><p class="address" id="venue-address"></p></div>
-      <p class="step-label" style="margin-top:22px">STEP 2　選擇交通方式</p>
-      <div class="mode-buttons" aria-label="選擇交通方式"><button class="mode-button" type="button" data-mode="transit" aria-pressed="false">🚇 大眾運輸</button><button class="mode-button" type="button" data-mode="drive" aria-pressed="false">🚗 開車・停車</button></div>
-      <p class="empty-prompt" id="empty-prompt">請選擇大眾運輸或開車・停車</p><div class="mode-content" id="mode-content" hidden></div>
+      <a class="primary-button" id="venue-nav" target="_blank" rel="noopener">開啟導航 ↗</a>
+      <div class="mode-content" id="mode-content"></div>
     </section>
   </main>
 
-  <template id="tangcheng-transit"><dl class="info-list"><div class="info-row"><dt>🚇</dt><dd><strong>捷運</strong>先嗇宮站 1 號出口，出站右轉，步行約 5 分鐘抵達湯城園區。</dd></div><div class="info-row"><dt>🚌</dt><dd><strong>公車</strong>636、801、857 等路線，於「中興街口」站下車。</dd></div></dl><a class="primary-button" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%89%E9%87%8D%E5%8D%80%E9%87%8D%E6%96%B0%E8%B7%AF%E4%BA%94%E6%AE%B5609%E5%B7%B72%E8%99%9F">開啟場地導航 ↗</a></template>
-  <template id="pengyuan-transit"><dl class="info-list"><div class="info-row"><dt>🚇</dt><dd><strong>捷運</strong>三重國小站，出站右轉，步行約 3 分鐘抵達介壽廣場。</dd></div><div class="info-row"><dt>🚌</dt><dd><strong>公車</strong>857、39、62、忠孝幹線等路線，於「龍門路口」或「介壽廣場」站下車。</dd></div></dl><a class="primary-button" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%BD%AD%E5%9C%92%E4%B8%89%E9%87%8D%E9%A4%A8">開啟場地導航 ↗</a></template>
+  <template id="tangcheng-transit"><dl class="info-list"><div class="info-row"><dt>🚇</dt><dd><strong>搭乘捷運</strong>先嗇宮站 1 號出口，出站右轉，步行約 5 分鐘抵達湯城園區。</dd></div><div class="info-row"><dt>🚌</dt><dd><strong>搭乘公車</strong>636、801、857 等路線，於「中興街口」站下車。</dd></div></dl></template>
+  <template id="pengyuan-transit"><dl class="info-list"><div class="info-row"><dt>🚇</dt><dd><strong>搭乘捷運</strong>三重國小站，出站右轉，步行約 3 分鐘抵達介壽廣場。</dd></div><div class="info-row"><dt>🚌</dt><dd><strong>搭乘公車</strong>857、39、62、忠孝幹線等路線，於「龍門路口」或「介壽廣場」站下車。</dd></div></dl></template>
   <template id="tangcheng-drive">
-    <div class="parking-heading"><div><h3>湯城園區停車場</h3><p>以下皆仍列於新北市停車場名冊、24 小時營業；目前未提供即時空位。</p></div></div>
-    <div class="parking-list">
-      <article class="parking-card"><div><h3>太平洋三站停車場</h3><p class="parking-meta">重新路5段609巷10號 B2・汽車 40 元／小時</p></div><div class="parking-actions"><a class="outline-button" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%A4%AA%E5%B9%B3%E6%B4%8B%E4%B8%89%E7%AB%99%E5%81%9C%E8%BB%8A%E5%A0%B4">導航 ↗</a></div></article>
-      <article class="parking-card"><div><h3>湯城三期一站停車場</h3><p class="parking-meta">中興北街77號對面空地・汽車 50 元／小時</p></div><div class="parking-actions"><a class="outline-button" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%B9%AF%E5%9F%8E%E4%B8%89%E6%9C%9F%E4%B8%80%E7%AB%99%E5%81%9C%E8%BB%8A%E5%A0%B4">導航 ↗</a></div></article>
-      <article class="parking-card"><div><h3>湯城三期二站停車場</h3><p class="parking-meta">重新路5段609巷旁空地・汽車 50 元／小時</p></div><div class="parking-actions"><a class="outline-button" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%B9%AF%E5%9F%8E%E4%B8%89%E6%9C%9F%E4%BA%8C%E7%AB%99%E5%81%9C%E8%BB%8A%E5%A0%B4">導航 ↗</a></div></article>
-      <article class="parking-card"><div><h3>湯城三期三站停車場</h3><p class="parking-meta">重新路5段與中興北街交叉口旁空地・汽車 50 元／小時</p></div><div class="parking-actions"><a class="outline-button" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%B9%AF%E5%9F%8E%E4%B8%89%E6%9C%9F%E4%B8%89%E7%AB%99%E5%81%9C%E8%BB%8A%E5%A0%B4">導航 ↗</a></div></article>
-    </div><aside class="tip">💡 費率可能異動，請以停車場現場公告為準。</aside>
+    <div class="parking-heading"><div><h3>🚗 開車前往</h3><p>湯城園區內設有停車場，可直接駛入停車。</p></div></div>
+    <aside class="tip">抵達園區後，請依現場指示前往停車區；車位與費率以現場公告為準。</aside>
   </template>
   <template id="pengyuan-drive">
     <div class="parking-heading"><div><h3>彭園附近停車場</h3><p>公有停車場即時資料約每 5 分鐘同步，實際車位以現場為準。</p></div><button class="refresh-button" id="refresh-parking" type="button">重新整理 ↻</button></div>
@@ -124,20 +118,18 @@
   </template>
   <footer><p class="names">書平 ♡ 秋華</p><p>2026.10.9　我們在婚禮現場等你 🤍</p></footer>
   <script>
-    const VENUES={tangcheng:{kicker:'CEREMONY · 佛前結婚儀式',title:'湯城園區｜創價學會三重會館',time:'2026.10.9　13:30 入場｜14:00 開始',address:'📍 新北市三重區重新路五段609巷2號3樓之1'},pengyuan:{kicker:'RECEPTION · 幸福晚宴',title:'彭園三重館',time:'2026.10.9　17:30 入席｜18:00 開始',address:'📍 新北市三重區龍門路6號4樓・國際宴會 B 廳'}};
+    const VENUES={tangcheng:{kicker:'CEREMONY · 佛前結婚儀式',title:'湯城園區｜創價學會三重會館',time:'2026.10.9　13:30 入場｜14:00 開始',address:'📍 新北市三重區重新路五段609巷2號3樓之1',nav:'https://www.google.com/maps/search/?api=1&query=%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%89%E9%87%8D%E5%8D%80%E9%87%8D%E6%96%B0%E8%B7%AF%E4%BA%94%E6%AE%B5609%E5%B7%B72%E8%99%9F'},pengyuan:{kicker:'RECEPTION · 幸福晚宴',title:'彭園三重館',time:'2026.10.9　17:30 入席｜18:00 開始',address:'📍 新北市三重區龍門路6號4樓・國際宴會 B 廳',nav:'https://www.google.com/maps/search/?api=1&query=%E5%BD%AD%E5%9C%92%E4%B8%89%E9%87%8D%E9%A4%A8'}};
     const PARKING_CACHE_API='https://api.github.com/repos/LeoShuPingLin/shuping-qiuhua-wedding/issues/1';
     const LIVE_PARKS={'正義公園地下停車場':'020005','龍門公園地下停車場':'020016'};
-    const panel=document.querySelector('#transport-panel'),content=document.querySelector('#mode-content'),emptyPrompt=document.querySelector('#empty-prompt'); let selectedVenue='';
-    function selectVenue(venueKey,{scroll=true}={}){if(!VENUES[venueKey])return;selectedVenue=venueKey;document.querySelectorAll('[data-venue]').forEach(item=>item.setAttribute('aria-pressed',String(item.dataset.venue===venueKey)));document.querySelectorAll('[data-mode]').forEach(item=>item.setAttribute('aria-pressed','false'));const venue=VENUES[selectedVenue];document.querySelector('#venue-kicker').textContent=venue.kicker;document.querySelector('#venue-title').textContent=venue.title;document.querySelector('#venue-time').textContent=venue.time;document.querySelector('#venue-address').textContent=venue.address;content.hidden=true;content.replaceChildren();emptyPrompt.hidden=false;panel.hidden=false;if(scroll)panel.scrollIntoView({behavior:'smooth',block:'start'});}
-    function selectMode(modeKey){if(!selectedVenue||!['transit','drive'].includes(modeKey))return;document.querySelectorAll('[data-mode]').forEach(item=>item.setAttribute('aria-pressed',String(item.dataset.mode===modeKey)));const template=document.querySelector(`#${selectedVenue}-${modeKey}`);content.replaceChildren(template.content.cloneNode(true));emptyPrompt.hidden=true;content.hidden=false;if(selectedVenue==='pengyuan'&&modeKey==='drive')updateParking();}
-    function updateUrl(venueKey,modeKey){const url=new URL(location.href);url.searchParams.set('venue',venueKey);if(modeKey)url.searchParams.set('mode',modeKey);else url.searchParams.delete('mode');history.replaceState(null,'',url);}
-    document.querySelectorAll('[data-venue]').forEach(button=>button.addEventListener('click',()=>{selectVenue(button.dataset.venue);updateUrl(button.dataset.venue,'');}));
-    document.querySelectorAll('[data-mode]').forEach(button=>button.addEventListener('click',()=>{selectMode(button.dataset.mode);updateUrl(selectedVenue,button.dataset.mode);}));
+    const panel=document.querySelector('#transport-panel'),content=document.querySelector('#mode-content'); let selectedVenue='';
+    function selectVenue(venueKey,{scroll=true}={}){if(!VENUES[venueKey])return;selectedVenue=venueKey;document.querySelectorAll('[data-venue]').forEach(item=>item.setAttribute('aria-pressed',String(item.dataset.venue===venueKey)));const venue=VENUES[selectedVenue];document.querySelector('#venue-kicker').textContent=venue.kicker;document.querySelector('#venue-title').textContent=venue.title;document.querySelector('#venue-time').textContent=venue.time;document.querySelector('#venue-address').textContent=venue.address;document.querySelector('#venue-nav').href=venue.nav;content.replaceChildren(document.querySelector(`#${venueKey}-transit`).content.cloneNode(true),document.querySelector(`#${venueKey}-drive`).content.cloneNode(true));panel.hidden=false;if(venueKey==='pengyuan')updateParking();if(scroll)panel.scrollIntoView({behavior:'smooth',block:'start'});}
+    function updateUrl(venueKey){const url=new URL(location.href);url.searchParams.set('venue',venueKey);url.searchParams.delete('mode');history.replaceState(null,'',url);}
+    document.querySelectorAll('[data-venue]').forEach(button=>button.addEventListener('click',()=>{selectVenue(button.dataset.venue);updateUrl(button.dataset.venue);}));
     function setAvailability(card,value,message){const badge=card.querySelector('.availability');badge.className='availability';if(message){badge.textContent=message;badge.classList.add('error');return}if(value<=0){badge.textContent='目前已滿';badge.classList.add('full')}else{badge.innerHTML=`尚有 <strong>${value}</strong> 格`;badge.classList.add(value<=20?'busy':'good')}}
     async function updateParking(){const refreshButton=content.querySelector('#refresh-parking'),updatedLabel=content.querySelector('#last-updated');if(!refreshButton||refreshButton.disabled)return;refreshButton.disabled=true;refreshButton.textContent='更新中⋯';try{const response=await fetch(`${PARKING_CACHE_API}?t=${Date.now()}`,{cache:'no-store'});if(!response.ok)throw new Error(`HTTP ${response.status}`);const issue=await response.json(),match=issue.body&&issue.body.match(/```json\s*([\s\S]*?)```/i);if(!match)throw new Error('Parking cache is missing');const cache=JSON.parse(match[1]);content.querySelectorAll('[data-live-parking]').forEach(card=>{const value=Number(cache.parks&&cache.parks[LIVE_PARKS[card.dataset.liveParking]]);Number.isNaN(value)||value===-9?setAvailability(card,null,'暫無即時資料'):setAvailability(card,value)});updatedLabel.textContent=`資料更新：${new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Taipei',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(cache.updatedAt))}（約每 5 分鐘同步）`}catch(error){content.querySelectorAll('[data-live-parking]').forEach(card=>setAvailability(card,null,'暫時無法連線'));updatedLabel.textContent='即時資料暫時無法連線，可查看官方停車資訊。'}finally{refreshButton.disabled=false;refreshButton.textContent='重新整理 ↻'}}
     content.addEventListener('click',event=>{if(event.target.closest('#refresh-parking'))updateParking()});setInterval(()=>{if(selectedVenue==='pengyuan'&&!content.hidden&&content.querySelector('#refresh-parking'))updateParking()},180000);
-    const initialParams=new URLSearchParams(location.search),initialVenue=initialParams.get('venue'),initialMode=initialParams.get('mode');
-    if(VENUES[initialVenue]){selectVenue(initialVenue,{scroll:false});if(['transit','drive'].includes(initialMode))selectMode(initialMode);}
+    const initialVenue=new URLSearchParams(location.search).get('venue');
+    if(VENUES[initialVenue])selectVenue(initialVenue,{scroll:false});
   </script>
 </body>
 </html>
