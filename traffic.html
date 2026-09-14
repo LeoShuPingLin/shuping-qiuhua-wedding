@@ -81,6 +81,9 @@
     .availability.error { color:#6d635d; background:#ece7e2; }
     .availability.reference { color:#6d635d; background:#eee8e2; }
     .more-parking { margin-top:16px; border-top:1px solid var(--line); }
+    .parking-heading-actions { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px; }
+    .secondary-button { background:#fffaf4; }
+    .more-parking summary { display:none; }
     .more-parking summary { padding:16px 4px; color:var(--accent-dark); cursor:pointer; font-weight:700; text-align:center; list-style:none; }
     .more-parking summary::-webkit-details-marker { display:none; }
     .more-parking summary::after { content:' ＋'; }
@@ -141,13 +144,13 @@
     <aside class="tip">抵達園區後，請依現場指示前往停車區；車位與費率以現場公告為準。</aside>
   </template>
   <template id="pengyuan-drive">
-    <div class="parking-heading"><div><h3>推薦停車場</h3><p>優先選擇車位較多、可查看即時車位的停車場。</p></div><button class="refresh-button" id="refresh-parking" type="button">更新車位 ↻</button></div>
+    <div class="parking-heading"><div><h3>推薦停車場</h3><p>光榮、龍門、厚德可查看即時車位；彭園與華南距離近，但車位有限。</p></div><div class="parking-heading-actions"><button class="refresh-button" id="refresh-parking" type="button">更新車位 ↻</button><button class="refresh-button secondary-button" id="toggle-more-parking" type="button" aria-expanded="false">其他停車選項</button></div></div>
     <div class="parking-list">
       <article class="parking-card" data-live-parking="三重區光榮國小地下停車場"><div><h3>① 光榮國小地下停車場</h3><p class="parking-meta">介壽路32號・步行約 8～10 分鐘</p><p class="parking-note">汽車約 30 元／小時・約 575 格車位。</p></div><div class="parking-actions"><span class="availability">查詢中⋯</span><a class="outline-button" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%89%E9%87%8D%E5%8D%80%E4%BB%8B%E5%A3%BD%E8%B7%AF32%E8%99%9F">導航到停車場 ↗</a></div></article>
       <article class="parking-card" data-live-parking="龍門公園地下停車場"><div><h3>② 龍門公園地下停車場</h3><p class="parking-meta">公園街32號・步行約 9 分鐘</p><p class="parking-note">20 元／小時・約 427 格車位。</p></div><div class="parking-actions"><span class="availability">查詢中⋯</span><a class="outline-button" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=%E9%BE%8D%E9%96%80%E5%85%AC%E5%9C%92%E5%9C%B0%E4%B8%8B%E5%81%9C%E8%BB%8A%E5%A0%B4">導航到停車場 ↗</a></div></article>
       <article class="parking-card" data-live-parking="三重區厚德國小地下停車場"><div><h3>③ 厚德國小地下停車場</h3><p class="parking-meta">忠孝路一段70號 B1・步行約 10～12 分鐘</p><p class="parking-note">汽車約 30 元／小時・約 95 格車位。</p></div><div class="parking-actions"><span class="availability">查詢中⋯</span><a class="outline-button" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%89%E9%87%8D%E5%8D%80%E5%BF%A0%E5%AD%9D%E8%B7%AF%E4%B8%80%E6%AE%B570%E8%99%9F">導航到停車場 ↗</a></div></article>
     </div>
-    <details class="more-parking"><summary>查看其他備選停車場</summary><div class="parking-list">
+    <details class="more-parking" id="more-parking"><summary>其他停車選項</summary><div class="parking-list">
       <article class="parking-card"><div><h3>彭園特約停車場</h3><p class="parking-meta">正義北路319號旁車道進入・距離最近</p><p class="parking-note">約 80 元／小時；彭園賓客可能享 3 小時免費，請依當日館方公告。車位有限，不建議作為唯一選擇。</p></div><div class="parking-actions"><span class="availability reference">距離近但車位少</span><a class="outline-button" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%BD%AD%E5%9C%92%E7%89%B9%E7%B4%84%E5%81%9C%E8%BB%8A%E5%A0%B4%E6%AD%A3%E7%BE%A9%E5%8C%97%E8%B7%AF319%E8%99%9F">導航到停車場 ↗</a></div></article>
       <article class="parking-card"><div><h3>華南銀行地下停車場</h3><p class="parking-meta">龍門路1號・彭園對面</p><p class="parking-note">費率與車型限制請依現場公告。</p></div><div class="parking-actions"><span class="availability reference">備選停車場</span><a class="outline-button" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%89%E9%87%8D%E5%8D%80%E9%BE%8D%E9%96%80%E8%B7%AF1%E8%99%9F">導航到停車場 ↗</a></div></article>
       <article class="parking-card" data-live-parking="三重區忠孝自強平面停車場"><div><h3>忠孝自強平面停車場</h3><p class="parking-meta">忠孝路二段35號對面・步行約 7～9 分鐘</p><p class="parking-note">汽車約 30 元／小時・約 40 格車位。</p></div><div class="parking-actions"><span class="availability">查詢中⋯</span><a class="outline-button" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%89%E9%87%8D%E5%8D%80%E5%BF%A0%E5%AD%9D%E8%B7%AF%E4%BA%8C%E6%AE%B535%E8%99%9F">導航到停車場 ↗</a></div></article>
@@ -229,7 +232,7 @@
         updatedLabel.textContent='車位更新失敗，請稍後重試或查看官方停車資訊。';
       }finally{refreshButton.disabled=false;refreshButton.textContent='更新車位 ↻';}
     }
-    content.addEventListener('click',event=>{if(event.target.closest('#refresh-parking'))updateParking()});
+    content.addEventListener('click',event=>{if(event.target.closest('#refresh-parking'))updateParking();const toggle=event.target.closest('#toggle-more-parking');if(toggle){const details=content.querySelector('#more-parking');if(details){details.open=!details.open;toggle.setAttribute('aria-expanded',String(details.open));toggle.textContent=details.open?'收起其他選項':'其他停車選項';}}});
     setInterval(()=>{
       if(selectedVenue==='pengyuan'&&!document.hidden){
         const label=content.querySelector('#last-updated');
