@@ -1,6 +1,6 @@
 // Cloudflare Worker: paste this entire file into the Worker editor.
 const SOURCE = 'https://data.ntpc.gov.tw/api/datasets/e09b35a5-a738-48cc-b0f5-570b67ad9c78/json?page=0&size=2000';
-const IDS = ['020005', '020016'];
+const IDS = ['020016', '020206', '020058', '020072'];
 const TTL = 60000;
 const ORIGIN = 'https://leoshupinglin.github.io';
 let pending;
