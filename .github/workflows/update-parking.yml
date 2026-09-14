@@ -1,0 +1,49 @@
+name: Update parking availability
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  update-parking:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Fetch New Taipei parking data and update cache
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const endpoint = 'https://data.ntpc.gov.tw/api/datasets/e09b35a5-a738-48cc-b0f5-570b67ad9c78/json?page=0&size=2000';
+            const response = await fetch(endpoint, { headers: { Accept: 'application/json' } });
+            if (!response.ok) throw new Error(`New Taipei API returned ${response.status}`);
+
+            const rows = await response.json();
+            const wanted = new Set(['020005', '020016']);
+            const parks = {};
+            for (const row of rows) {
+              if (wanted.has(String(row.ID))) parks[String(row.ID)] = Number(row.AVAILABLECAR);
+            }
+            if (Object.keys(parks).length === 0) throw new Error('No matching parking data returned');
+
+            const payload = {
+              updatedAt: new Date().toISOString(),
+              parks
+            };
+            const body = [
+              '此項目由 GitHub Actions 自動維護，供婚禮交通頁讀取新北市停車場公開資料。',
+              '',
+              '```json',
+              JSON.stringify(payload),
+              '```'
+            ].join('\n');
+
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 1,
+              body
+            });
