@@ -5,7 +5,8 @@ on:
     paths:
       - ".github/workflows/update-parking.yml"
   schedule:
-    - cron: "*/5 * * * *"
+    # Offset from common 0/5-minute schedules; GitHub may still delay runs.
+    - cron: "2-57/5 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -21,14 +22,30 @@ jobs:
         with:
           script: |
             const endpoint = 'https://data.ntpc.gov.tw/api/datasets/e09b35a5-a738-48cc-b0f5-570b67ad9c78/json?page=0&size=2000';
-            const response = await fetch(endpoint, { headers: { Accept: 'application/json' } });
-            if (!response.ok) throw new Error(`New Taipei API returned ${response.status}`);
-
-            const rows = await response.json();
+            let rows;
+            for (let attempt = 0; attempt < 3; attempt++) {
+              try {
+                const response = await fetch(endpoint, {
+                  headers: { Accept: 'application/json' },
+                  signal: AbortSignal.timeout(20000)
+                });
+                if (!response.ok) throw new Error(`New Taipei API returned ${response.status}`);
+                rows = await response.json();
+                if (!Array.isArray(rows)) throw new Error('Unexpected parking response');
+                break;
+              } catch (error) {
+                if (attempt === 2) throw error;
+                await new Promise(resolve => setTimeout(resolve, 3000));
+              }
+            }
             const wanted = new Set(['020005', '020016']);
             const parks = {};
             for (const row of rows) {
-              if (wanted.has(String(row.ID))) parks[String(row.ID)] = Number(row.AVAILABLECAR);
+              if (wanted.has(String(row.ID))) {
+                const raw = row.AVAILABLECAR;
+                const value = Number(raw);
+                parks[String(row.ID)] = raw != null && String(raw).trim() !== '' && Number.isInteger(value) && value >= 0 ? value : null;
+              }
             }
             if (Object.keys(parks).length === 0) throw new Error('No matching parking data returned');
 
