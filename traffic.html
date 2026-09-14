@@ -18,7 +18,7 @@
     a { color:inherit; text-decoration:none; }
     button { color:inherit; font:inherit; }
     [hidden] { display:none !important; }
-    .topbar { position:sticky; z-index:20; top:0; min-height:58px; padding:10px max(18px,env(safe-area-inset-left)); display:flex; align-items:center; justify-content:space-between; background:rgba(255,250,244,.9); border-bottom:1px solid var(--line); backdrop-filter:blur(16px); }
+    .topbar { position:relative; min-height:58px; padding:10px max(18px,env(safe-area-inset-left)); display:flex; align-items:center; justify-content:space-between; background:rgba(255,250,244,.9); border-bottom:1px solid var(--line); backdrop-filter:blur(16px); }
     .brand { font-family:"Noto Serif TC",serif; font-weight:700; letter-spacing:.08em; }
     .brand span { color:var(--accent); }
     .back-link { color:var(--muted); font-size:.85rem; font-weight:600; }
@@ -27,9 +27,9 @@
     h1,h2,h3 { font-family:"Noto Serif TC",serif; }
     h1 { margin:10px 0 14px; font-size:clamp(2.15rem,7vw,4rem); letter-spacing:.08em; }
     .hero-note { margin:0 auto; max-width:600px; color:var(--muted); }
-    body.venue-selected .hero { padding:30px 0 16px; }
+    body.venue-selected .hero { padding:14px 0 0; text-align:left; }
     body.venue-selected .hero .script, body.venue-selected .hero .hero-note { display:none; }
-    body.venue-selected .hero h1 { margin:0; font-size:clamp(1.55rem,5vw,2.25rem); }
+    body.venue-selected .hero h1 { margin:0; font:600 1rem/1.5 "Noto Sans TC",sans-serif; color:var(--muted); letter-spacing:.04em; }
     main { width:min(920px,calc(100% - 36px)); margin:0 auto 80px; }
     .step-label { margin:0 0 12px; color:var(--accent-dark); font-size:.78rem; font-weight:700; letter-spacing:.16em; }
     .venue-buttons { display:grid; grid-template-columns:repeat(2,1fr); gap:18px; }
@@ -87,6 +87,26 @@
     footer .names { font-family:"Noto Serif TC",serif; font-size:1.4rem; letter-spacing:.1em; }
     @media (max-width:650px) { .hero{padding-top:44px}.venue-buttons{grid-template-columns:1fr;gap:12px}.venue-button{min-height:120px;border-radius:19px}.transport-panel{padding:21px 17px;border-radius:19px}.venue-summary{display:block}.address{margin-top:10px;max-width:none;text-align:left}.parking-card{grid-template-columns:1fr}.parking-actions{justify-content:space-between}.live-footer{flex-direction:column;gap:3px} }
     @media (max-width:390px) { main,.hero{width:min(100% - 24px,920px)}.topbar{padding-inline:13px}.back-link{font-size:.78rem}.info-row{grid-template-columns:32px 1fr;gap:8px}.parking-actions{align-items:stretch;flex-direction:column} }
+    .transport-panel { margin-top:14px; }
+    .venue-summary { display:block; padding-bottom:14px; }
+    .venue-summary h2 { font-size:clamp(1.4rem,4.8vw,2rem); line-height:1.5; }
+    .address { max-width:none; text-align:left; margin-top:10px; font-size:1rem; overflow-wrap:anywhere; }
+    .quick-links { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+    .quick-links a { display:flex; justify-content:center; align-items:center; min-height:48px; padding:10px 4px; border:1px solid var(--accent); border-radius:12px; color:var(--accent-dark); font-weight:700; font-size:.95rem; }
+    a:focus-visible,button:focus-visible { outline:3px solid #66503d; outline-offset:4px; }
+    .travel-section { scroll-margin-top:16px; }
+    .travel-section + .travel-section { border-top:1px solid var(--line); margin-top:24px; padding-top:24px; }
+    .parking-card { grid-template-columns:1fr; padding:16px; }
+    .parking-actions { justify-content:space-between; flex-wrap:wrap; }
+    .parking-actions .outline-button,.refresh-button { min-height:44px; }
+    .parking-meta,.parking-note,.parking-heading p,.tip { font-size:1rem; }
+    .availability { white-space:normal; }
+    .parking-heading { flex-wrap:wrap; align-items:center; }
+    .parking-heading > div { flex:1 1 230px; }
+    main { margin-bottom:32px; }
+    footer { padding:20px 16px calc(20px + env(safe-area-inset-bottom)); font-size:.85rem; }
+    footer .names { font-size:1.05rem; }
+    @media (max-width:390px) { .parking-actions{flex-direction:row;align-items:center}.quick-links a{font-size:.88rem} }
     @media (prefers-reduced-motion:reduce) { html{scroll-behavior:auto}*{transition-duration:.01ms!important} }
   </style>
 </head>
@@ -100,8 +120,9 @@
       <button class="venue-button" type="button" data-venue="pengyuan" aria-pressed="false"><small>幸福晚宴</small><strong>彭園三重館</strong><span>17:30 入席｜18:00 開始</span></button>
     </section>
     <section class="transport-panel" id="transport-panel" aria-live="polite" hidden>
-      <div class="venue-summary"><div><p class="kicker" id="venue-kicker"></p><h2 id="venue-title"></h2><p id="venue-time"></p></div><p class="address" id="venue-address"></p></div>
+      <div class="venue-summary"><div><p class="kicker" id="venue-kicker"></p><h2 id="venue-title"></h2><p id="venue-time"></p></div><div class="address"><p id="venue-address"></p><p id="venue-floor"></p></div></div>
       <a class="primary-button" id="venue-nav" target="_blank" rel="noopener">開啟導航 ↗</a>
+      <nav class="quick-links" aria-label="快速查看交通方式"><a href="#drive-info">🚗 開車／停車 ↓</a><a href="#transit-info">🚇 捷運／公車 ↓</a></nav>
       <div class="mode-content" id="mode-content"></div>
       <button class="change-venue" id="change-venue" type="button">查看另一個場地的交通資訊</button>
     </section>
@@ -114,13 +135,13 @@
     <aside class="tip">抵達園區後，請依現場指示前往停車區；車位與費率以現場公告為準。</aside>
   </template>
   <template id="pengyuan-drive">
-    <div class="parking-heading"><div><h3>彭園附近停車場</h3><p>公有停車場即時資料約每 5 分鐘同步，實際車位以現場為準。</p></div><button class="refresh-button" id="refresh-parking" type="button">重新整理 ↻</button></div>
+    <div class="parking-heading"><div><h3>彭園附近停車場</h3><p>剩餘車位僅供參考，請留意資料時間，實際以現場為準。</p></div><button class="refresh-button" id="refresh-parking" type="button">更新車位 ↻</button></div>
     <div class="parking-list">
-      <article class="parking-card"><div><h3>台灣聯通介壽場</h3><p class="parking-meta">正義北路319號旁車道進入・約 80 元／小時</p><p class="parking-note">彭園婚宴賓客可能享 3 小時免費，請依當日館方公告。</p></div><div class="parking-actions"><span class="availability error">無即時資料</span><a class="outline-button" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%8F%B0%E7%81%A3%E8%81%AF%E9%80%9A%E4%BB%8B%E5%A3%BD%E5%81%9C%E8%BB%8A%E5%A0%B4">導航 ↗</a></div></article>
-      <article class="parking-card"><div><h3>華南銀行地下停車場</h3><p class="parking-meta">龍門路1號・彭園對面</p><p class="parking-note">機械式停車場，費率與車型限制請依現場公告。</p></div><div class="parking-actions"><span class="availability error">無即時資料</span><a class="outline-button" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%89%E9%87%8D%E5%8D%80%E9%BE%8D%E9%96%80%E8%B7%AF1%E8%99%9F">導航 ↗</a></div></article>
-      <article class="parking-card" data-live-parking="正義公園地下停車場"><div><h3>正義公園地下停車場</h3><p class="parking-meta">雙園街1號・步行約 6 分鐘</p><p class="parking-note">平日 30 元／小時、國定例假日 40 元／小時。</p></div><div class="parking-actions"><span class="availability">查詢中⋯</span><a class="outline-button" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%AD%A3%E7%BE%A9%E5%85%AC%E5%9C%92%E5%9C%B0%E4%B8%8B%E5%81%9C%E8%BB%8A%E5%A0%B4">導航 ↗</a></div></article>
-      <article class="parking-card"><div><h3>三張公園地下停車場</h3><p class="parking-meta">大智街188號・步行約 9 分鐘</p><p class="parking-note">約 30 元／小時。</p></div><div class="parking-actions"><span class="availability error">暫無即時資料</span><a class="outline-button" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=%E4%B8%89%E5%BC%B5%E5%85%AC%E5%9C%92%E5%9C%B0%E4%B8%8B%E5%81%9C%E8%BB%8A%E5%A0%B4">導航 ↗</a></div></article>
-      <article class="parking-card" data-live-parking="龍門公園地下停車場"><div><h3>龍門公園地下停車場</h3><p class="parking-meta">公園街32號・步行約 9 分鐘</p><p class="parking-note">20 元／小時・機械式車位限高約 150 公分。</p></div><div class="parking-actions"><span class="availability">查詢中⋯</span><a class="outline-button" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=%E9%BE%8D%E9%96%80%E5%85%AC%E5%9C%92%E5%9C%B0%E4%B8%8B%E5%81%9C%E8%BB%8A%E5%A0%B4">導航 ↗</a></div></article>
+      <article class="parking-card"><div><h3>台灣聯通介壽場</h3><p class="parking-meta">正義北路319號旁車道進入・約 80 元／小時</p><p class="parking-note">彭園婚宴賓客可能享 3 小時免費，請依當日館方公告。</p></div><div class="parking-actions"><span class="availability error">未提供即時車位</span><a class="outline-button" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%8F%B0%E7%81%A3%E8%81%AF%E9%80%9A%E4%BB%8B%E5%A3%BD%E5%81%9C%E8%BB%8A%E5%A0%B4">導航到停車場 ↗</a></div></article>
+      <article class="parking-card"><div><h3>華南銀行地下停車場</h3><p class="parking-meta">龍門路1號・彭園對面</p><p class="parking-note">機械式停車場，費率與車型限制請依現場公告。</p></div><div class="parking-actions"><span class="availability error">未提供即時車位</span><a class="outline-button" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%89%E9%87%8D%E5%8D%80%E9%BE%8D%E9%96%80%E8%B7%AF1%E8%99%9F">導航到停車場 ↗</a></div></article>
+      <article class="parking-card" data-live-parking="正義公園地下停車場"><div><h3>正義公園地下停車場</h3><p class="parking-meta">雙園街1號・步行約 6 分鐘</p><p class="parking-note">平日 30 元／小時、國定例假日 40 元／小時。</p></div><div class="parking-actions"><span class="availability">查詢中⋯</span><a class="outline-button" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%AD%A3%E7%BE%A9%E5%85%AC%E5%9C%92%E5%9C%B0%E4%B8%8B%E5%81%9C%E8%BB%8A%E5%A0%B4">導航到停車場 ↗</a></div></article>
+      <article class="parking-card"><div><h3>三張公園地下停車場</h3><p class="parking-meta">大智街188號・步行約 9 分鐘</p><p class="parking-note">約 30 元／小時。</p></div><div class="parking-actions"><span class="availability error">未提供即時車位</span><a class="outline-button" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=%E4%B8%89%E5%BC%B5%E5%85%AC%E5%9C%92%E5%9C%B0%E4%B8%8B%E5%81%9C%E8%BB%8A%E5%A0%B4">導航到停車場 ↗</a></div></article>
+      <article class="parking-card" data-live-parking="龍門公園地下停車場"><div><h3>龍門公園地下停車場</h3><p class="parking-meta">公園街32號・步行約 9 分鐘</p><p class="parking-note">20 元／小時・機械式車位限高約 150 公分。</p></div><div class="parking-actions"><span class="availability">查詢中⋯</span><a class="outline-button" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=%E9%BE%8D%E9%96%80%E5%85%AC%E5%9C%92%E5%9C%B0%E4%B8%8B%E5%81%9C%E8%BB%8A%E5%A0%B4">導航到停車場 ↗</a></div></article>
     </div><div class="live-footer"><span id="last-updated">正在連線新北市停車資料⋯</span><a class="official-link" href="https://www.parkinginfo.ntpc.gov.tw/" target="_blank" rel="noopener">查看官方停車資訊 ↗</a></div><aside class="tip">💡 2026.10.9 為國慶日補假，費率可能依國定假日計算；請以現場公告為準。</aside>
   </template>
   <footer><p class="names">書平 ♡ 秋華</p><p>2026.10.9　我們在婚禮現場等你 🤍</p></footer>
@@ -129,14 +150,89 @@
     const PARKING_CACHE_API='https://api.github.com/repos/LeoShuPingLin/shuping-qiuhua-wedding/issues/1';
     const LIVE_PARKS={'正義公園地下停車場':'020005','龍門公園地下停車場':'020016'};
     const panel=document.querySelector('#transport-panel'),content=document.querySelector('#mode-content'),venueStep=document.querySelector('#venue-step'),venuePicker=document.querySelector('#venue-picker'); let selectedVenue='';
-    function selectVenue(venueKey,{scroll=true}={}){if(!VENUES[venueKey])return;selectedVenue=venueKey;document.body.classList.add('venue-selected');venueStep.hidden=true;venuePicker.hidden=true;document.querySelectorAll('[data-venue]').forEach(item=>item.setAttribute('aria-pressed',String(item.dataset.venue===venueKey)));const venue=VENUES[selectedVenue];document.querySelector('#venue-kicker').textContent=venue.kicker;document.querySelector('#venue-title').textContent=venue.title;document.querySelector('#venue-time').textContent=venue.time;document.querySelector('#venue-address').textContent=venue.address;document.querySelector('#venue-nav').href=venue.nav;content.replaceChildren(document.querySelector(`#${venueKey}-transit`).content.cloneNode(true),document.querySelector(`#${venueKey}-drive`).content.cloneNode(true));panel.hidden=false;if(venueKey==='pengyuan')updateParking();if(scroll)panel.scrollIntoView({behavior:'smooth',block:'start'});}
+    function selectVenue(venueKey,{scroll=true}={}){
+      if(!VENUES[venueKey])return;
+      selectedVenue=venueKey;
+      document.body.classList.add('venue-selected');
+      venueStep.hidden=true;venuePicker.hidden=true;
+      document.querySelectorAll('[data-venue]').forEach(item=>item.setAttribute('aria-pressed',String(item.dataset.venue===venueKey)));
+      const venue=VENUES[venueKey],tangcheng=venueKey==='tangcheng';
+      document.querySelector('#venue-kicker').textContent=tangcheng?'佛前結婚儀式':'幸福晚宴';
+      document.querySelector('#venue-title').textContent=tangcheng?'創價學會三重會館':'彭園三重館';
+      document.querySelector('#venue-time').textContent=venue.time;
+      document.querySelector('#venue-address').textContent=tangcheng?'新北市三重區重新路五段609巷2號':'新北市三重區龍門路6號';
+      document.querySelector('#venue-floor').textContent=tangcheng?'湯城園區｜3樓之1':'介壽廣場 4樓｜國際宴會 B 廳';
+      const nav=document.querySelector('#venue-nav');
+      nav.href=venue.nav;nav.textContent=tangcheng?'導航到會館 ↗':'導航到彭園 ↗';
+      content.replaceChildren();
+      for(const mode of ['transit','drive']){
+        const section=document.createElement('section');
+        section.id=mode+'-info';section.className='travel-section';section.tabIndex=-1;
+        section.setAttribute('aria-label',mode==='drive'?'開車與停車':'捷運與公車');
+        section.append(document.querySelector('#'+venueKey+'-'+mode).content.cloneNode(true));
+        content.append(section);
+      }
+      document.querySelector('#change-venue').textContent=tangcheng?'查看晚宴｜彭園交通 →':'查看儀式｜三重會館交通 →';
+      panel.hidden=false;
+      if(!tangcheng)updateParking();
+      if(scroll)window.scrollTo({top:0,behavior:'auto'});
+    }
     function resetVenue(){selectedVenue='';document.body.classList.remove('venue-selected');panel.hidden=true;venueStep.hidden=false;venuePicker.hidden=false;document.querySelectorAll('[data-venue]').forEach(item=>item.setAttribute('aria-pressed','false'));const url=new URL(location.href);url.searchParams.delete('venue');url.searchParams.delete('mode');history.replaceState(null,'',url);venuePicker.scrollIntoView({behavior:'smooth',block:'center'});}
     function updateUrl(venueKey){const url=new URL(location.href);url.searchParams.set('venue',venueKey);url.searchParams.delete('mode');history.replaceState(null,'',url);}
     document.querySelectorAll('[data-venue]').forEach(button=>button.addEventListener('click',()=>{selectVenue(button.dataset.venue);updateUrl(button.dataset.venue);}));
-    document.querySelector('#change-venue').addEventListener('click',resetVenue);
+    document.querySelector('#change-venue').addEventListener('click',()=>{const venue=selectedVenue==='tangcheng'?'pengyuan':'tangcheng';selectVenue(venue);updateUrl(venue);});
     function setAvailability(card,value,message){const badge=card.querySelector('.availability');badge.className='availability';if(message){badge.textContent=message;badge.classList.add('error');return}if(value<=0){badge.textContent='目前已滿';badge.classList.add('full')}else{badge.innerHTML=`尚有 <strong>${value}</strong> 格`;badge.classList.add(value<=20?'busy':'good')}}
-    async function updateParking(){const refreshButton=content.querySelector('#refresh-parking'),updatedLabel=content.querySelector('#last-updated');if(!refreshButton||refreshButton.disabled)return;refreshButton.disabled=true;refreshButton.textContent='更新中⋯';try{const response=await fetch(`${PARKING_CACHE_API}?t=${Date.now()}`,{cache:'no-store'});if(!response.ok)throw new Error(`HTTP ${response.status}`);const issue=await response.json(),match=issue.body&&issue.body.match(/```json\s*([\s\S]*?)```/i);if(!match)throw new Error('Parking cache is missing');const cache=JSON.parse(match[1]);content.querySelectorAll('[data-live-parking]').forEach(card=>{const value=Number(cache.parks&&cache.parks[LIVE_PARKS[card.dataset.liveParking]]);Number.isNaN(value)||value===-9?setAvailability(card,null,'暫無即時資料'):setAvailability(card,value)});updatedLabel.textContent=`資料更新：${new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Taipei',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(cache.updatedAt))}（約每 5 分鐘同步）`}catch(error){content.querySelectorAll('[data-live-parking]').forEach(card=>setAvailability(card,null,'暫時無法連線'));updatedLabel.textContent='即時資料暫時無法連線，可查看官方停車資訊。'}finally{refreshButton.disabled=false;refreshButton.textContent='重新整理 ↻'}}
-    content.addEventListener('click',event=>{if(event.target.closest('#refresh-parking'))updateParking()});setInterval(()=>{if(selectedVenue==='pengyuan'&&!content.hidden&&content.querySelector('#refresh-parking'))updateParking()},180000);
+    const STALE_AFTER_MS=15*60*1000;
+    let lastParkingCache=null;
+    function renderParking(cache,updatedLabel){
+      const stamp=new Date(cache.updatedAt).getTime();
+      const stale=!Number.isFinite(stamp)||Date.now()-stamp>STALE_AFTER_MS||stamp>Date.now()+60000;
+      content.querySelectorAll('[data-live-parking]').forEach(card=>{
+        const raw=cache.parks?.[LIVE_PARKS[card.dataset.liveParking]];
+        if(stale){setAvailability(card,null,'資料較舊，請查官方資訊');return;}
+        if(raw===null||raw===undefined||String(raw).trim()===''||!Number.isInteger(Number(raw))||Number(raw)<0){
+          setAvailability(card,null,'未提供即時車位');return;
+        }
+        setAvailability(card,Number(raw));
+      });
+      const time=Number.isFinite(stamp)?new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Taipei',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(stamp)):'時間不明';
+      updatedLabel.textContent='車位資料時間：'+time+(stale?'｜資料較舊，請查看官方停車資訊。':'｜頁面每分鐘檢查更新，來源資料可能延遲。');
+    }
+    async function updateParking(){
+      const refreshButton=content.querySelector('#refresh-parking'),updatedLabel=content.querySelector('#last-updated');
+      if(!refreshButton||refreshButton.disabled)return;
+      refreshButton.disabled=true;refreshButton.textContent='更新中⋯';
+      try{
+        const response=await fetch(PARKING_CACHE_API+'?t='+Date.now(),{cache:'no-store',signal:AbortSignal.timeout(12000)});
+        if(!response.ok)throw new Error('HTTP '+response.status);
+        const issue=await response.json(),match=issue.body&&issue.body.match(/```json\s*([\s\S]*?)```/i);
+        if(!match)throw new Error('Parking cache is missing');
+        const cache=JSON.parse(match[1]);
+        if(!updatedLabel.isConnected)return;
+        lastParkingCache=cache;
+        renderParking(cache,updatedLabel);
+      }catch(error){
+        if(!updatedLabel.isConnected)return;
+        lastParkingCache=null;
+        content.querySelectorAll('[data-live-parking]').forEach(card=>setAvailability(card,null,'暫時無法更新'));
+        updatedLabel.textContent='車位更新失敗，請稍後重試或查看官方停車資訊。';
+      }finally{refreshButton.disabled=false;refreshButton.textContent='更新車位 ↻';}
+    }
+    content.addEventListener('click',event=>{if(event.target.closest('#refresh-parking'))updateParking()});
+    setInterval(()=>{
+      if(selectedVenue==='pengyuan'&&!document.hidden){
+        const label=content.querySelector('#last-updated');
+        if(lastParkingCache&&label)renderParking(lastParkingCache,label);
+        updateParking();
+      }
+    },60000);
+    document.addEventListener('visibilitychange',()=>{
+      if(!document.hidden&&selectedVenue==='pengyuan'){
+        const label=content.querySelector('#last-updated');
+        if(lastParkingCache&&label)renderParking(lastParkingCache,label);
+        updateParking();
+      }
+    });
     const initialVenue=new URLSearchParams(location.search).get('venue');
     if(VENUES[initialVenue])selectVenue(initialVenue,{scroll:false});
   </script>
