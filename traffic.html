@@ -178,7 +178,7 @@
       if(scroll)window.scrollTo({top:0,behavior:'auto'});
     }
     function resetVenue(){selectedVenue='';document.body.classList.remove('venue-selected');panel.hidden=true;venueStep.hidden=false;venuePicker.hidden=false;document.querySelectorAll('[data-venue]').forEach(item=>item.setAttribute('aria-pressed','false'));const url=new URL(location.href);url.searchParams.delete('venue');url.searchParams.delete('mode');history.replaceState(null,'',url);venuePicker.scrollIntoView({behavior:'smooth',block:'center'});}
-    function updateUrl(venueKey){const url=new URL(location.href);url.searchParams.set('venue',venueKey);url.searchParams.delete('mode');history.replaceState(null,'',url);}
+    function updateUrl(venueKey){const url=new URL(location.href);url.searchParams.set('venue',venueKey);url.searchParams.delete('mode');url.hash='';history.replaceState(null,'',url);}
     document.querySelectorAll('[data-venue]').forEach(button=>button.addEventListener('click',()=>{selectVenue(button.dataset.venue);updateUrl(button.dataset.venue);}));
     document.querySelector('#change-venue').addEventListener('click',()=>{const venue=selectedVenue==='tangcheng'?'pengyuan':'tangcheng';selectVenue(venue);updateUrl(venue);});
     function setAvailability(card,value,message){const badge=card.querySelector('.availability');badge.className='availability';if(message){badge.textContent=message;badge.classList.add('error');return}if(value<=0){badge.textContent='目前已滿';badge.classList.add('full')}else{badge.innerHTML=`尚有 <strong>${value}</strong> 格`;badge.classList.add(value<=20?'busy':'good')}}
