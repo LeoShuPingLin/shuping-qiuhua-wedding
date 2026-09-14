@@ -1,6 +1,9 @@
 name: Update parking availability
 
 on:
+  push:
+    paths:
+      - ".github/workflows/update-parking.yml"
   schedule:
     - cron: "*/5 * * * *"
   workflow_dispatch:
