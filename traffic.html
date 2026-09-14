@@ -147,7 +147,7 @@
   <footer><p class="names">書平 ♡ 秋華</p><p>2026.10.9　我們在婚禮現場等你 🤍</p></footer>
   <script>
     const VENUES={tangcheng:{kicker:'CEREMONY · 佛前結婚儀式',title:'創價學會三重會館',time:'2026.10.9　13:30 入場｜14:00 開始',address:'📍 湯城園區 3樓之1｜新北市三重區重新路五段609巷2號',nav:'https://www.google.com/maps/search/?api=1&query=%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%89%E9%87%8D%E5%8D%80%E9%87%8D%E6%96%B0%E8%B7%AF%E4%BA%94%E6%AE%B5609%E5%B7%B72%E8%99%9F'},pengyuan:{kicker:'RECEPTION · 幸福晚宴',title:'彭園三重館｜國際宴會 B 廳',time:'2026.10.9　17:30 入席｜18:00 開始',address:'📍 介壽廣場 4樓｜新北市三重區龍門路6號',nav:'https://www.google.com/maps/search/?api=1&query=%E5%BD%AD%E5%9C%92%E4%B8%89%E9%87%8D%E9%A4%A8'}};
-    const PARKING_CACHE_API='https://api.github.com/repos/LeoShuPingLin/shuping-qiuhua-wedding/issues/1';
+    const PARKING_CACHE_API='https://shuping-wedding-parking.a1030788.workers.dev/parking';
     const LIVE_PARKS={'正義公園地下停車場':'020005','龍門公園地下停車場':'020016'};
     const panel=document.querySelector('#transport-panel'),content=document.querySelector('#mode-content'),venueStep=document.querySelector('#venue-step'),venuePicker=document.querySelector('#venue-picker'); let selectedVenue='';
     function selectVenue(venueKey,{scroll=true}={}){
@@ -205,9 +205,8 @@
       try{
         const response=await fetch(PARKING_CACHE_API+'?t='+Date.now(),{cache:'no-store',signal:AbortSignal.timeout(12000)});
         if(!response.ok)throw new Error('HTTP '+response.status);
-        const issue=await response.json(),match=issue.body&&issue.body.match(/```json\s*([\s\S]*?)```/i);
-        if(!match)throw new Error('Parking cache is missing');
-        const cache=JSON.parse(match[1]);
+        const cache=await response.json();
+        if(cache.error||!cache.parks)throw new Error('Parking data unavailable');
         if(!updatedLabel.isConnected)return;
         lastParkingCache=cache;
         renderParking(cache,updatedLabel);
