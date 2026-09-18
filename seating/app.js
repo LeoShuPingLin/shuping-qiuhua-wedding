@@ -277,17 +277,19 @@
     bindGuestClicks();
   }
   function renderBoard() {
-    els.board.innerHTML = state.tables.map((t) => {
+    els.board.innerHTML = state.tables.map((t, tableIndex) => {
       const seated = tableCount(t.id);
       const pct = Math.min(100, Math.round(seated / (t.capacity || 1) * 100));
       const full = seated === +t.capacity;
       const over = seated > +t.capacity;
       const guests = state.guests.filter((g) => g.attendance === 'dinner' && g.table_id === t.id);
-      return `<section class="table-card ${full ? 'full' : ''} ${over ? 'over' : ''} ${t.is_locked ? 'locked-table' : ''}">
-        <div class="table-head"><div class="table-title-wrap">
+      return `<section class="table-card ${full ? 'full' : ''} ${over ? 'over' : ''} ${t.is_locked ? 'locked-table' : ''}" data-table-card-id="${t.id}">
+        <div class="table-head"><button class="table-drag-handle" type="button" title="拖曳調整桌次位置" aria-label="拖曳調整桌次位置">⋮⋮</button><div class="table-title-wrap">
           <input class="table-name" value="${escapeHtml(t.name)}" data-name-table="${t.id}" ${t.is_locked ? 'disabled' : ''}/>
           <div class="table-status">${seated} / ${t.capacity} 人${full ? ' · 已滿' : over ? ` · 超出 ${seated - t.capacity}` : ` · 剩 ${t.capacity - seated}`}</div>
         </div><div class="table-actions">
+          <button class="icon-btn table-step" data-move-table="${t.id}" data-dir="-1" title="往左移一格" aria-label="往左移一格" ${tableIndex === 0 ? 'disabled' : ''}>←</button>
+          <button class="icon-btn table-step" data-move-table="${t.id}" data-dir="1" title="往右移一格" aria-label="往右移一格" ${tableIndex === state.tables.length - 1 ? 'disabled' : ''}>→</button>
           <button class="icon-btn ${t.is_locked ? 'active' : ''}" data-lock-table="${t.id}" title="${t.is_locked ? '解鎖' : '鎖定'}">${t.is_locked ? '🔒' : '🔓'}</button>
           <button class="icon-btn" data-cap-table="${t.id}" title="座位上限">↕</button>
           <button class="icon-btn" data-delete-table="${t.id}" title="刪除桌次">×</button>
@@ -302,7 +304,39 @@
   function bindGuestClicks() {
     $$('[data-edit-guest]').forEach((btn) => btn.onclick = (e) => { e.stopPropagation(); openGuest(btn.dataset.editGuest); });
   }
+  async function persistTableOrder(orderedIds, label = '調整桌次位置') {
+    const cleanIds = orderedIds.filter(Boolean);
+    if (cleanIds.length !== state.tables.length) {
+      toast('桌次排序資料不完整，已重新載入');
+      render();
+      return false;
+    }
+    return mutate(label, async () => {
+      for (let i = 0; i < cleanIds.length; i += 1) {
+        const { error } = await db.from('wedding_tables')
+          .update({ sort_order: (i + 1) * 10 })
+          .eq('id', cleanIds[i])
+          .eq('event_id', EVENT_ID);
+        if (error) throw error;
+      }
+      return { error: null };
+    });
+  }
+
+  async function moveTableStep(id, delta) {
+    const ids = state.tables.map((t) => t.id);
+    const from = ids.indexOf(id);
+    const to = from + delta;
+    if (from < 0 || to < 0 || to >= ids.length) return;
+    [ids[from], ids[to]] = [ids[to], ids[from]];
+    await persistTableOrder(ids, delta < 0 ? '桌次往左移' : '桌次往右移');
+  }
+
   function bindTableActions() {
+    $$('[data-move-table]').forEach((btn) => btn.onclick = async () => {
+      if (btn.disabled) return;
+      await moveTableStep(btn.dataset.moveTable, Number(btn.dataset.dir) || 0);
+    });
     $$('[data-name-table]').forEach((input) => input.onchange = async () => {
       const t = tableById(input.dataset.nameTable);
       const name = input.value.trim() || t.name;
@@ -332,6 +366,22 @@
   function initSortables() {
     sortables.forEach((s) => s.destroy());
     sortables = [];
+
+    const tableSortable = new Sortable(els.board, {
+      animation: 180,
+      draggable: '.table-card',
+      handle: '.table-drag-handle',
+      ghostClass: 'table-dragging',
+      chosenClass: 'table-chosen',
+      onEnd: async (evt) => {
+        if (evt.oldIndex === evt.newIndex) return;
+        const ids = [...els.board.querySelectorAll('.table-card')].map((card) => card.dataset.tableCardId);
+        const ok = await persistTableOrder(ids);
+        if (!ok) render();
+      }
+    });
+    sortables.push(tableSortable);
+
     $$('.guest-list[data-table-id]').forEach((list) => {
       const tid = list.dataset.tableId || null;
       const t = tid ? tableById(tid) : null;
