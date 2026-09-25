@@ -80,7 +80,6 @@ output/wedding_slideshow.mp4
 
 - `canvas.width` / `canvas.height`：影片解析度
 - `canvas.fps`：FPS
-- `canvas.duration_seconds`：輸出影片長度
 
 ### 上下背景
 
@@ -91,8 +90,7 @@ output/wedding_slideshow.mp4
 
 ### 中間輪播
 
-- `carousel.speed_px_per_second`：滑動速度，數字越大越快
-- `carousel.direction`：`left` 或 `right`
+- `carousel.speed_px_per_second`：滑動速度，數字越大越快\n- `carousel.loop_cycles`：一支影片完整跑幾輪；預設 1 輪，首尾可無縫銜接\n- `carousel.direction`：`left` 或 `right`
 - `carousel.photo_height`：照片高度
 - `carousel.gap`：照片之間距離
 - `carousel.vertical_offset`：中間整排上下微調
