@@ -13,7 +13,7 @@ SUPPORTED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
 
 
 def natural_key(path: Path):
-    return [int(x) if x.isdigit() else x.lower() for x in re.split(r"(\\d+)", path.name)]
+    return [int(x) if x.isdigit() else x.lower() for x in re.split(r"(\d+)", path.name)]
 
 
 def load_config(path: Path) -> dict:
