@@ -1,0 +1,38 @@
+{
+  "canvas": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "duration_seconds": 30,
+    "background_color": "#F7F3EE"
+  },
+  "background": {
+    "top_image": "assets/background_top.jpg",
+    "bottom_image": "assets/background_bottom.jpg",
+    "top_height": 310,
+    "bottom_height": 310,
+    "blur_radius": 0.8,
+    "brightness": 0.92
+  },
+  "carousel": {
+    "photos_dir": "photos",
+    "direction": "left",
+    "speed_px_per_second": 85,
+    "photo_height": 370,
+    "gap": 34,
+    "vertical_offset": 0,
+    "frame_padding": 10,
+    "frame_color": "#FFFFFF",
+    "corner_radius": 18,
+    "shadow_blur": 14,
+    "shadow_offset_y": 7,
+    "shadow_opacity": 70
+  },
+  "output": {
+    "video_file": "output/wedding_slideshow.mp4",
+    "preview_file": "output/preview.png",
+    "preview_second": 2.0,
+    "crf": 18,
+    "preset": "medium"
+  }
+}
