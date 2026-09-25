@@ -3,7 +3,6 @@
     "width": 1920,
     "height": 1080,
     "fps": 30,
-    "duration_seconds": 30,
     "background_color": "#F7F3EE"
   },
   "background": {
@@ -26,12 +25,13 @@
     "corner_radius": 18,
     "shadow_blur": 14,
     "shadow_offset_y": 7,
-    "shadow_opacity": 70
+    "shadow_opacity": 70,
+    "loop_cycles": 1
   },
   "output": {
     "video_file": "output/wedding_slideshow.mp4",
     "preview_file": "output/preview.png",
-    "preview_second": 2.0,
+    "preview_second": 2,
     "crf": 18,
     "preset": "medium"
   }
