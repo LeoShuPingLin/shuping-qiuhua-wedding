@@ -160,7 +160,7 @@
   </template>
   <footer><p class="names">書平 ♡ 秋華</p><p>2026.10.9　我們在婚禮現場等你 🤍</p></footer>
   <script>
-    const VENUES={tangcheng:{kicker:'CEREMONY · 佛前結婚儀式',title:'創價學會三重會館',time:'2026.10.9　13:30 入場｜14:00 開始',address:'📍 湯城園區 3樓之1｜新北市三重區重新路五段609巷2號',nav:'https://www.google.com/maps/search/?api=1&query=%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%89%E9%87%8D%E5%8D%80%E9%87%8D%E6%96%B0%E8%B7%AF%E4%BA%94%E6%AE%B5609%E5%B7%B72%E8%99%9F'},pengyuan:{kicker:'RECEPTION · 幸福晚宴',title:'彭園三重館｜國際宴會 B 廳',time:'2026.10.9　17:30 入席｜18:00 開始',address:'📍 介壽廣場 4樓｜新北市三重區龍門路6號',nav:'https://www.google.com/maps/search/?api=1&query=%E5%BD%AD%E5%9C%92%E4%B8%89%E9%87%8D%E9%A4%A8'}};
+    const VENUES={tangcheng:{kicker:'CEREMONY · 佛前結婚儀式',title:'創價學會三重會館',time:'2026.10.9　13:30 入場｜14:00 開始',address:'📍 湯城園區 3樓之1｜新北市三重區重新路五段609巷2號',nav:'https://www.google.com/maps/search/?api=1&query=%E6%96%B0%E5%8C%97%E5%B8%82%E4%B8%89%E9%87%8D%E5%8D%80%E9%87%8D%E6%96%B0%E8%B7%AF%E4%BA%94%E6%AE%B5609%E5%B7%B72%E8%99%9F'},pengyuan:{kicker:'RECEPTION · 幸福晚宴',title:'彭園三重館｜國際宴會 A 廳',time:'2026.10.9　17:30 入席｜18:00 開始',address:'📍 介壽廣場 4樓｜新北市三重區龍門路6號',nav:'https://www.google.com/maps/search/?api=1&query=%E5%BD%AD%E5%9C%92%E4%B8%89%E9%87%8D%E9%A4%A8'}};
     const PARKING_CACHE_API='https://shuping-wedding-parking.a1030788.workers.dev/parking';
     const LIVE_PARKS={'三重區光榮國小地下停車場':'020206','三重區厚德國小地下停車場':'020058','三重區忠孝自強平面停車場':'020072','龍門公園地下停車場':'020016'};
     const panel=document.querySelector('#transport-panel'),content=document.querySelector('#mode-content'),venueStep=document.querySelector('#venue-step'),venuePicker=document.querySelector('#venue-picker'); let selectedVenue='';
@@ -175,7 +175,7 @@
       document.querySelector('#venue-title').textContent=tangcheng?'創價學會三重會館':'彭園三重館';
       document.querySelector('#venue-time').textContent=venue.time;
       document.querySelector('#venue-address').textContent=tangcheng?'新北市三重區重新路五段609巷2號':'新北市三重區龍門路6號';
-      document.querySelector('#venue-floor').textContent=tangcheng?'湯城園區｜3樓之1':'介壽廣場 4樓｜國際宴會 B 廳';
+      document.querySelector('#venue-floor').textContent=tangcheng?'湯城園區｜3樓之1':'介壽廣場 4樓｜國際宴會 A 廳';
       const nav=document.querySelector('#venue-nav');
       nav.href=venue.nav;nav.textContent=tangcheng?'導航到會館 ↗':'導航到彭園 ↗';
       content.replaceChildren();
