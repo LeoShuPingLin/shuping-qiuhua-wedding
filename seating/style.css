@@ -166,3 +166,43 @@ body.busy{cursor:progress}.status-error{color:var(--danger)!important}.status-sa
   }
   body.print-seatmap .map-table{min-width:0;max-width:none}
 }
+
+
+/* Practical seat-map labels: show full table names */
+.map-table{
+  width:8.2%;
+  min-width:86px;
+  max-width:104px;
+  padding:7px;
+}
+.map-table:first-child{
+  width:10.2%;
+  min-width:100px;
+  max-width:122px;
+}
+.map-table b{
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:3;
+  overflow:hidden;
+  white-space:normal;
+  text-overflow:clip;
+  overflow-wrap:anywhere;
+  word-break:break-word;
+  max-width:92%;
+  line-height:1.15;
+  font-size:14px;
+  text-align:center;
+}
+.map-table b.medium-name{font-size:12.5px}
+.map-table b.long-name{font-size:11px;line-height:1.08}
+.map-table span{
+  font-size:10px;
+  line-height:1.1;
+  margin-top:2px;
+}
+@media print{
+  body.print-seatmap .map-table b{font-size:11px}
+  body.print-seatmap .map-table b.medium-name{font-size:10px}
+  body.print-seatmap .map-table b.long-name{font-size:9px}
+}
