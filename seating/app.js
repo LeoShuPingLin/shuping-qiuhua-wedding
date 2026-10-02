@@ -448,7 +448,7 @@
   }
 
   function bindSeatMapDrag() {
-    $('[data-map-table-id]').forEach((node) => {
+    $$('[data-map-table-id]').forEach((node) => {
       node.onmouseenter = (e) => showSeatMapTooltip(e, node.dataset.mapTableId);
       node.onmousemove = moveSeatMapTooltip;
       node.onmouseleave = hideSeatMapTooltip;
