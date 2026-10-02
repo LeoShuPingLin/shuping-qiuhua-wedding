@@ -206,3 +206,58 @@ body.busy{cursor:progress}.status-error{color:var(--danger)!important}.status-sa
   body.print-seatmap .map-table b.medium-name{font-size:10px}
   body.print-seatmap .map-table b.long-name{font-size:9px}
 }
+
+
+/* Table-card editing: practical multi-line table names */
+.table-head{
+  display:grid;
+  grid-template-columns:28px minmax(0,1fr);
+  grid-template-areas:
+    "drag title"
+    "actions actions";
+  align-items:start;
+  gap:7px 8px;
+}
+.table-drag-handle{grid-area:drag}
+.table-title-wrap{
+  grid-area:title;
+  width:100%;
+  min-width:0;
+}
+.table-actions{
+  grid-area:actions;
+  width:100%;
+  justify-content:flex-end;
+  padding-top:2px;
+}
+.table-name{
+  display:block;
+  width:100%;
+  min-height:46px;
+  max-height:72px;
+  resize:vertical;
+  overflow:auto;
+  border:1px solid #eadfe1;
+  background:#fff;
+  border-radius:9px;
+  padding:7px 9px;
+  font-weight:800;
+  font-size:15px;
+  line-height:1.35;
+  color:var(--ink);
+  outline:0;
+}
+.table-name:focus{
+  border-color:#c994a1;
+  box-shadow:0 0 0 3px #faeff2;
+}
+.table-name:disabled{
+  border-color:transparent;
+  background:transparent;
+  resize:none;
+  padding-left:0;
+  padding-right:0;
+}
+.table-status{
+  margin-top:4px;
+}
