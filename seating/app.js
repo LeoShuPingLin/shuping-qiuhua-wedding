@@ -296,7 +296,7 @@
       const guests = state.guests.filter((g) => g.attendance === 'dinner' && g.table_id === t.id);
       return `<section class="table-card ${full ? 'full' : ''} ${over ? 'over' : ''} ${t.is_locked ? 'locked-table' : ''}" data-table-card-id="${t.id}">
         <div class="table-head"><button class="table-drag-handle" type="button" title="拖曳調整桌次位置" aria-label="拖曳調整桌次位置">⋮⋮</button><div class="table-title-wrap">
-          <input class="table-name" value="${escapeHtml(t.name)}" data-name-table="${t.id}" ${t.is_locked ? 'disabled' : ''}/>
+          <textarea class="table-name" data-name-table="${t.id}" rows="2" ${t.is_locked ? 'disabled' : ''}>${escapeHtml(t.name)}</textarea>
           <div class="table-status">${seated} / ${t.capacity} 人${full ? ' · 已滿' : over ? ` · 超出 ${seated - t.capacity}` : ` · 剩 ${t.capacity - seated}`}</div>
         </div><div class="table-actions">
           <button class="icon-btn table-step" data-move-table="${t.id}" data-dir="-1" title="往左移一格" aria-label="往左移一格" ${tableIndex === 0 ? 'disabled' : ''}>←</button>
