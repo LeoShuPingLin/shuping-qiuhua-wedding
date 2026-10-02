@@ -7,13 +7,13 @@
   const EVENT_ID = cfg.eventId || 'shu-qiu-2026';
   const MAX_HISTORY = 20;
   const VENUE_SLOTS = [
-    { label:'主桌位', x:39.66, y:21.85 },
-    { label:'左區 1', x:13.45, y:37.17 }, { label:'左中區 1', x:29.24, y:37.17 }, { label:'中區 1', x:51.09, y:37.17 },
-    { label:'左區 2', x:13.45, y:48.81 }, { label:'左中區 2', x:29.24, y:48.81 }, { label:'中區 2', x:51.09, y:48.81 },
-    { label:'左區 3', x:13.45, y:60.57 }, { label:'左中區 3', x:29.24, y:60.57 }, { label:'中區 3', x:51.09, y:60.57 },
-    { label:'左區 4', x:13.45, y:72.21 }, { label:'左中區 4', x:29.24, y:72.21 }, { label:'中區 4', x:51.09, y:72.21 },
-    { label:'右區 1', x:67.06, y:34.68 }, { label:'右區 2', x:67.06, y:45.49 }, { label:'右區 3', x:67.06, y:56.06 },
-    { label:'右區 4', x:67.06, y:67.10 }, { label:'右區 5', x:67.06, y:77.91 }
+    { label:'主桌位', x:49.0, y:21.5 },
+    { label:'左區 1', x:13.5, y:39.0 }, { label:'左中區 1', x:29.0, y:39.0 }, { label:'中區 1', x:44.5, y:39.0 },
+    { label:'左區 2', x:13.5, y:53.0 }, { label:'左中區 2', x:29.0, y:53.0 }, { label:'中區 2', x:44.5, y:53.0 },
+    { label:'左區 3', x:13.5, y:67.0 }, { label:'左中區 3', x:29.0, y:67.0 }, { label:'中區 3', x:44.5, y:67.0 },
+    { label:'左區 4', x:13.5, y:81.0 }, { label:'左中區 4', x:29.0, y:81.0 }, { label:'中區 4', x:44.5, y:81.0 },
+    { label:'右區 1', x:66.0, y:32.5 }, { label:'右區 2', x:66.0, y:44.5 }, { label:'右區 3', x:66.0, y:56.5 },
+    { label:'右區 4', x:66.0, y:68.5 }, { label:'右區 5', x:66.0, y:80.5 }
   ];
   let db = null;
   let currentSession = null;
@@ -315,29 +315,84 @@
 
   function clampMap(v, min = 5, max = 95) { return Math.min(max, Math.max(min, Number(v) || 0)); }
   function defaultMapPosition(index) {
-    if (VENUE_SLOTS[index]) return VENUE_SLOTS[index];
-    const extra = index - VENUE_SLOTS.length;
-    return { label:`延伸位 ${extra + 1}`, x:76 + (extra % 2) * 9, y:28 + Math.floor(extra / 2) * 10 };
+    return VENUE_SLOTS[index] || null;
   }
-  function tableMapPosition(t, index) {
-    const fallback = defaultMapPosition(index);
-    const x = Number.isFinite(Number(t.map_x)) ? Number(t.map_x) : fallback.x;
-    const y = Number.isFinite(Number(t.map_y)) ? Number(t.map_y) : fallback.y;
-    return { x: clampMap(x), y: clampMap(y), label: fallback.label };
+  function hasStoredMapPosition(t) {
+    if (t.map_x === null || t.map_x === undefined || t.map_y === null || t.map_y === undefined) return false;
+    const x = Number(t.map_x), y = Number(t.map_y);
+    if (!Number.isFinite(x) || !Number.isFinite(y)) return false;
+    // Old bug turned null into the clamped upper-left corner. Treat that as unset.
+    if (x <= 6.1 && y <= 9.1) return false;
+    return true;
+  }
+  function distanceToSlot(x, y, slot) {
+    const dx = x - slot.x, dy = y - slot.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+  function nearestSlotIndex(x, y) {
+    let best = 0, bestD = Infinity;
+    VENUE_SLOTS.forEach((slot, i) => {
+      const d = distanceToSlot(x, y, slot);
+      if (d < bestD) { bestD = d; best = i; }
+    });
+    return best;
+  }
+  function resolveSeatAssignments() {
+    const used = new Set();
+    const result = new Map();
+
+    // First pass: preserve existing positions when they map to an unused venue slot.
+    state.tables.forEach((t) => {
+      if (!hasStoredMapPosition(t)) return;
+      const preferred = nearestSlotIndex(Number(t.map_x), Number(t.map_y));
+      if (!used.has(preferred)) {
+        result.set(t.id, preferred);
+        used.add(preferred);
+      }
+    });
+
+    // Second pass: every remaining table gets one unique free venue slot.
+    state.tables.forEach((t, i) => {
+      if (result.has(t.id)) return;
+      let preferred = i < VENUE_SLOTS.length ? i : -1;
+      if (preferred >= 0 && !used.has(preferred)) {
+        result.set(t.id, preferred);
+        used.add(preferred);
+        return;
+      }
+      const free = VENUE_SLOTS.findIndex((_, idx) => !used.has(idx));
+      if (free >= 0) {
+        result.set(t.id, free);
+        used.add(free);
+      }
+    });
+    return result;
+  }
+  function tableMapPosition(t, index, assignments = resolveSeatAssignments()) {
+    const slotIndex = assignments.get(t.id);
+    if (slotIndex === undefined) return { x:92, y:18 + (index % 7) * 10, label:'超出 18 桌', slotIndex:-1 };
+    const slot = VENUE_SLOTS[slotIndex];
+    return { x:slot.x, y:slot.y, label:slot.label, slotIndex };
+  }
+  function clearSlotHighlights() {
+    $$('.venue-slot').forEach((slot) => slot.classList.remove('drop-target','occupied-target'));
   }
   function renderSeatMap() {
     if (!els.venueSlots || !els.mapTableLayer) return;
+    const assignments = resolveSeatAssignments();
+    const occupied = new Set([...assignments.values()]);
+
     els.venueSlots.innerHTML = VENUE_SLOTS.map((s, i) =>
-      `<div class="venue-slot" style="left:${s.x}%;top:${s.y}%"><span>${i + 1}</span></div>`
+      `<div class="venue-slot ${occupied.has(i) ? 'occupied' : ''}" data-slot-index="${i}" style="left:${s.x}%;top:${s.y}%"><span>${i + 1}</span></div>`
     ).join('');
 
     els.mapTableLayer.innerHTML = state.tables.map((t, i) => {
-      const pos = tableMapPosition(t, i);
+      const pos = tableMapPosition(t, i, assignments);
       const seated = tableCount(t.id);
       const full = seated === +t.capacity;
       const over = seated > +t.capacity;
       return `<button type="button" class="map-table ${full ? 'full' : ''} ${over ? 'over' : ''}" data-map-table-id="${t.id}"
-        style="left:${pos.x}%;top:${pos.y}%" title="拖曳調整 ${escapeHtml(t.name)} 的位置">
+        data-slot-index="${pos.slotIndex}" style="left:${pos.x}%;top:${pos.y}%" title="拖曳 ${escapeHtml(t.name)} 到另一個桌位">
         <b>${escapeHtml(t.name)}</b><span>${seated} / ${t.capacity} 人</span>
       </button>`;
     }).join('');
@@ -350,27 +405,68 @@
         e.preventDefault();
         const table = tableById(node.dataset.mapTableId);
         if (!table || !els.venueMap) return;
+
         const rect = els.venueMap.getBoundingClientRect();
+        const originalSlot = Number(node.dataset.slotIndex);
         let x = parseFloat(node.style.left) || 50;
         let y = parseFloat(node.style.top) || 50;
+        let targetSlot = originalSlot;
+
         node.classList.add('moving');
         try { node.setPointerCapture(e.pointerId); } catch {}
 
         const move = (ev) => {
-          x = clampMap(((ev.clientX - rect.left) / rect.width) * 100, 5.5, 94.5);
-          y = clampMap(((ev.clientY - rect.top) / rect.height) * 100, 8, 88);
+          x = clampMap(((ev.clientX - rect.left) / rect.width) * 100, 4.5, 94.5);
+          y = clampMap(((ev.clientY - rect.top) / rect.height) * 100, 8, 90);
           node.style.left = x.toFixed(2) + '%';
           node.style.top = y.toFixed(2) + '%';
+
+          targetSlot = nearestSlotIndex(x, y);
+          clearSlotHighlights();
+          const target = els.venueSlots.querySelector(`[data-slot-index="${targetSlot}"]`);
+          const occupiedByOther = [...els.mapTableLayer.querySelectorAll('[data-map-table-id]')]
+            .some((el) => el !== node && Number(el.dataset.slotIndex) === targetSlot);
+          target?.classList.add(occupiedByOther ? 'occupied-target' : 'drop-target');
         };
+
         const end = async () => {
           node.classList.remove('moving');
           node.removeEventListener('pointermove', move);
           node.removeEventListener('pointerup', end);
           node.removeEventListener('pointercancel', end);
-          await mutate('儲存座位圖位置', () => db.from('wedding_tables')
-            .update({ map_x:+x.toFixed(2), map_y:+y.toFixed(2) })
-            .eq('id', table.id).eq('event_id', EVENT_ID), { takeSnapshot:false });
+          clearSlotHighlights();
+
+          if (targetSlot < 0 || targetSlot >= VENUE_SLOTS.length) {
+            renderSeatMap();
+            return;
+          }
+
+          const targetPos = VENUE_SLOTS[targetSlot];
+          const occupantNode = [...els.mapTableLayer.querySelectorAll('[data-map-table-id]')]
+            .find((el) => el !== node && Number(el.dataset.slotIndex) === targetSlot);
+          const occupant = occupantNode ? tableById(occupantNode.dataset.mapTableId) : null;
+
+          // Snap the dragged table to the selected slot. If occupied, swap slots.
+          await mutate('調整座位圖', async () => {
+            const updates = [
+              db.from('wedding_tables')
+                .update({ map_x:targetPos.x, map_y:targetPos.y })
+                .eq('id', table.id).eq('event_id', EVENT_ID)
+            ];
+
+            if (occupant && originalSlot >= 0 && originalSlot < VENUE_SLOTS.length) {
+              const oldPos = VENUE_SLOTS[originalSlot];
+              updates.push(
+                db.from('wedding_tables')
+                  .update({ map_x:oldPos.x, map_y:oldPos.y })
+                  .eq('id', occupant.id).eq('event_id', EVENT_ID)
+              );
+            }
+            const results = await Promise.all(updates);
+            return results.find((r) => r.error) || { error:null };
+          }, { takeSnapshot:false });
         };
+
         node.addEventListener('pointermove', move);
         node.addEventListener('pointerup', end);
         node.addEventListener('pointercancel', end);
@@ -379,10 +475,10 @@
   }
   async function resetSeatMap() {
     if (!state.tables.length) return;
-    if (!confirm('將所有桌次放回 A 廳示意圖的預設位置？目前自訂位置會被覆蓋。')) return;
+    if (!confirm('將桌次依 A 廳 18 個固定桌位重新排列？目前自訂位置會被覆蓋。')) return;
     await mutate('重設座位圖', async () => {
-      const results = await Promise.all(state.tables.map((t, i) => {
-        const p = defaultMapPosition(i);
+      const results = await Promise.all(state.tables.slice(0, VENUE_SLOTS.length).map((t, i) => {
+        const p = VENUE_SLOTS[i];
         return db.from('wedding_tables').update({ map_x:p.x, map_y:p.y }).eq('id', t.id).eq('event_id', EVENT_ID);
       }));
       return results.find((r) => r.error) || { error:null };
@@ -397,16 +493,15 @@
   }
   function exportSeatMapExcel() {
     if (!window.XLSX) return toast('Excel 元件載入失敗，請確認網路');
+    const assignments = resolveSeatAssignments();
     const tableRows = state.tables.map((t, i) => {
-      const p = tableMapPosition(t, i);
+      const p = tableMapPosition(t, i, assignments);
       return {
-        圖上順序: i + 1,
-        場地位置: defaultMapPosition(i).label,
+        場地桌位: p.slotIndex >= 0 ? p.slotIndex + 1 : '超出 18 桌',
+        場地位置: p.label,
         桌次: t.name,
         已排人數: tableCount(t.id),
-        座位上限: t.capacity,
-        X百分比: +p.x.toFixed(2),
-        Y百分比: +p.y.toFixed(2)
+        座位上限: t.capacity
       };
     });
     const guestRows = [];
@@ -418,8 +513,7 @@
           同行者:g.companions || '', 兒童座椅:g.child_seats || 0, 備註:g.notes || ''
         }));
     });
-    const unassigned = state.guests.filter((g) => g.attendance === 'dinner' && !g.table_id);
-    unassigned.forEach((g) => guestRows.push({
+    state.guests.filter((g) => g.attendance === 'dinner' && !g.table_id).forEach((g) => guestRows.push({
       桌次:'尚未分桌', 姓名:g.name, 人數:g.party_size, 親友方:sideLabel(g.side),
       同行者:g.companions || '', 兒童座椅:g.child_seats || 0, 備註:g.notes || ''
     }));
