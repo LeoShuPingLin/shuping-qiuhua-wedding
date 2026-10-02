@@ -42,6 +42,12 @@
       </div>
     </div>
 
+    <nav class="view-tabs" aria-label="桌次功能切換">
+      <button class="view-tab active" type="button" data-view-tab="planner">桌次編排</button>
+      <button class="view-tab" type="button" data-view-tab="seatmap">座位安排</button>
+    </nav>
+
+    <section id="plannerView">
     <div class="toolbar">
       <button class="btn primary" id="importBtn">匯入 Excel</button>
       <button class="btn soft" id="addBtn">＋ 新增賓客</button>
@@ -91,6 +97,34 @@
       </aside>
       <main class="board" id="board"></main>
     </div>
+    </section>
+
+    <section id="seatmapView" class="seatmap-view" hidden>
+      <div class="map-toolbar">
+        <div>
+          <div class="eyebrow">BANQUET HALL A · SEATING MAP</div>
+          <h2>座位安排</h2>
+          <p>依彭園三重館國際宴會 A 廳示意圖重畫。直接拖曳圓桌調整位置，座位圖會同步到共用資料庫。</p>
+        </div>
+        <div class="map-actions">
+          <button class="btn" id="resetSeatMapBtn" type="button">依場地預設排列</button>
+          <button class="btn" id="seatMapExcelBtn" type="button">匯出座位安排 Excel</button>
+          <button class="btn primary" id="printSeatMapBtn" type="button">列印座位圖</button>
+        </div>
+      </div>
+
+      <div class="venue-map-shell">
+        <div class="venue-map" id="venueMap" aria-label="宴會廳座位配置圖">
+          <div class="venue-label audio-room">音控室</div>
+          <div class="venue-label stage">舞 台</div>
+          <div class="venue-label work-area">工作區</div>
+          <div class="venue-label backdrop-area">背板佈置區</div>
+          <div class="venue-slots" id="venueSlots" aria-hidden="true"></div>
+          <div class="map-table-layer" id="mapTableLayer"></div>
+        </div>
+      </div>
+      <div class="map-note">此為場地示意圖；圓桌可自由拖曳。列印時會只輸出座位圖，Excel 則會包含桌次位置與每桌賓客名單。</div>
+    </section>
   </div>
 
   <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" hidden />
