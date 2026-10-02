@@ -833,18 +833,120 @@
   }
   function exportExcel() {
     if (!window.XLSX) return toast('Excel 元件載入失敗，請確認網路');
-    const rows = state.guests.map((g) => ({
-      桌次: g.table_id ? (tableById(g.table_id)?.name || '') : (g.attendance === 'dinner' ? '尚未分桌' : '—'),
-      姓名: g.name, 人數: g.party_size, 親友方: sideLabel(g.side), 同行者: g.companions || '',
-      兒童座椅: g.child_seats || 0, 出席狀況: attendanceLabel(g.attendance), 備註: g.notes || ''
-    })).sort((a,b) => a.桌次.localeCompare(b.桌次, 'zh-Hant'));
-    const summary = state.tables.map((t) => ({ 桌次:t.name, 已排人數:tableCount(t.id), 座位上限:t.capacity, 剩餘座位:t.capacity-tableCount(t.id), 狀態:t.is_locked?'已鎖定':'可編輯' }));
+
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), '排桌總表');
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(summary), '桌次摘要');
+
+    // 1) 桌次總覽
+    const summaryRows = state.tables.map((t, i) => ({
+      順序: i + 1,
+      桌次: t.name,
+      已排人數: tableCount(t.id),
+      座位上限: t.capacity,
+      剩餘座位: t.capacity - tableCount(t.id),
+      組數: state.guests.filter((g) => g.attendance === 'dinner' && g.table_id === t.id).length,
+      狀態: t.is_locked ? '已鎖定' : '可編輯'
+    }));
+    const summaryWs = XLSX.utils.json_to_sheet(summaryRows);
+    summaryWs['!cols'] = [
+      { wch: 8 }, { wch: 24 }, { wch: 12 }, { wch: 12 },
+      { wch: 12 }, { wch: 10 }, { wch: 12 }
+    ];
+    XLSX.utils.book_append_sheet(wb, summaryWs, '桌次總覽');
+
+    // 2) 分桌名單：一桌一區塊，中間留空白
+    const aoa = [];
+    state.tables.forEach((t, tableIndex) => {
+      const guests = state.guests
+        .filter((g) => g.attendance === 'dinner' && g.table_id === t.id)
+        .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0) || a.name.localeCompare(b.name, 'zh-Hant'));
+
+      aoa.push([
+        `【${t.name}】`,
+        `已排 ${tableCount(t.id)} / ${t.capacity} 人`,
+        `共 ${guests.length} 組`,
+        '', '', '', ''
+      ]);
+      aoa.push(['姓名／群組', '人數', '親友方', '同行者', '兒童座椅', '備註', '狀態']);
+
+      if (guests.length) {
+        guests.forEach((g) => {
+          aoa.push([
+            g.name,
+            +g.party_size || 1,
+            sideLabel(g.side),
+            g.companions || '',
+            +g.child_seats || 0,
+            g.notes || '',
+            attendanceLabel(g.attendance)
+          ]);
+        });
+      } else {
+        aoa.push(['（目前無賓客）', '', '', '', '', '', '']);
+      }
+
+      aoa.push([
+        '小計',
+        tableCount(t.id),
+        '',
+        '',
+        state.guests
+          .filter((g) => g.attendance === 'dinner' && g.table_id === t.id)
+          .reduce((n, g) => n + (+g.child_seats || 0), 0),
+        '',
+        ''
+      ]);
+
+      if (tableIndex !== state.tables.length - 1) {
+        aoa.push(['', '', '', '', '', '', '']);
+        aoa.push(['', '', '', '', '', '', '']);
+      }
+    });
+
+    const groupedWs = XLSX.utils.aoa_to_sheet(aoa);
+    groupedWs['!cols'] = [
+      { wch: 24 }, { wch: 8 }, { wch: 12 }, { wch: 32 },
+      { wch: 12 }, { wch: 30 }, { wch: 12 }
+    ];
+    XLSX.utils.book_append_sheet(wb, groupedWs, '分桌名單');
+
+    // 3) 尚未分桌
+    const unassigned = state.guests
+      .filter((g) => g.attendance === 'dinner' && !g.table_id)
+      .map((g) => ({
+        姓名／群組: g.name,
+        人數: g.party_size,
+        親友方: sideLabel(g.side),
+        同行者: g.companions || '',
+        兒童座椅: g.child_seats || 0,
+        備註: g.notes || ''
+      }));
+    const unassignedWs = XLSX.utils.json_to_sheet(unassigned.length ? unassigned : [{ 姓名／群組:'目前無尚未分桌賓客' }]);
+    unassignedWs['!cols'] = [
+      { wch: 24 }, { wch: 8 }, { wch: 12 }, { wch: 32 }, { wch: 12 }, { wch: 30 }
+    ];
+    XLSX.utils.book_append_sheet(wb, unassignedWs, '尚未分桌');
+
+    // 4) 非晚宴／未確認
+    const other = state.guests
+      .filter((g) => g.attendance !== 'dinner')
+      .map((g) => ({
+        姓名／群組: g.name,
+        人數: g.party_size,
+        親友方: sideLabel(g.side),
+        出席狀況: attendanceLabel(g.attendance),
+        同行者: g.companions || '',
+        備註: g.notes || ''
+      }));
+    const otherWs = XLSX.utils.json_to_sheet(other.length ? other : [{ 姓名／群組:'目前無非晚宴／未確認資料' }]);
+    otherWs['!cols'] = [
+      { wch: 24 }, { wch: 8 }, { wch: 12 }, { wch: 14 }, { wch: 32 }, { wch: 30 }
+    ];
+    XLSX.utils.book_append_sheet(wb, otherWs, '非晚宴未確認');
+
     XLSX.writeFile(wb, `書平秋華_婚宴桌次_${new Date().toISOString().slice(0,10)}.xlsx`);
-    toast('已匯出 Excel');
+    toast('已匯出分桌版 Excel');
   }
+
   function backup() {
     downloadBlob(new Blob([JSON.stringify(makeBackupPayload(), null, 2)], { type:'application/json' }), `婚宴桌次雲端備份_${new Date().toISOString().slice(0,10)}.json`);
     toast('備份已下載');
