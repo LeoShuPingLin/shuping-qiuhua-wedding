@@ -38,7 +38,7 @@
     unassignedCount: $('#unassignedCount'), otherCount: $('#otherCount'), search: $('#searchInput'),
     sideFilter: $('#sideFilter'), sizeFilter: $('#sizeFilter'), saveStatus: $('#saveStatus'), lastSync: $('#lastSync'),
     toast: $('#toast'), fileInput: $('#fileInput'), restoreInput: $('#restoreInput'), loadingDialog: $('#loadingDialog'), loadingText: $('#loadingText'),
-    plannerView: $('#plannerView'), seatmapView: $('#seatmapView'), venueMap: $('#venueMap'), venueSlots: $('#venueSlots'), mapTableLayer: $('#mapTableLayer')
+    plannerView: $('#plannerView'), seatmapView: $('#seatmapView'), venueMap: $('#venueMap'), venueSlots: $('#venueSlots'), mapTableLayer: $('#mapTableLayer'), seatMapTooltip: $('#seatMapTooltip')
   };
 
   function escapeHtml(s = '') {
@@ -398,9 +398,62 @@
     }).join('');
     bindSeatMapDrag();
   }
+  function seatMapTooltipHtml(tableId) {
+    const t = tableById(tableId);
+    if (!t) return '';
+    const guests = state.guests
+      .filter((g) => g.attendance === 'dinner' && g.table_id === tableId)
+      .sort((a,b) => (a.sort_order || 0) - (b.sort_order || 0) || a.name.localeCompare(b.name, 'zh-Hant'));
+
+    const rows = guests.length
+      ? guests.map((g) => `
+          <div class="seat-tip-row">
+            <div class="seat-tip-name">${escapeHtml(g.name)}</div>
+            <div class="seat-tip-size">${+g.party_size || 1} 人</div>
+            ${g.companions ? `<div class="seat-tip-comp">同行：${escapeHtml(g.companions)}</div>` : ''}
+          </div>`).join('')
+      : '<div class="seat-tip-empty">目前沒有賓客</div>';
+
+    return `
+      <div class="seat-tip-head">
+        <b>${escapeHtml(t.name)}</b>
+        <span>${tableCount(t.id)} / ${t.capacity} 人</span>
+      </div>
+      <div class="seat-tip-list">${rows}</div>`;
+  }
+
+  function showSeatMapTooltip(e, tableId) {
+    const tip = els.seatMapTooltip;
+    if (!tip) return;
+    tip.innerHTML = seatMapTooltipHtml(tableId);
+    tip.hidden = false;
+    moveSeatMapTooltip(e);
+  }
+  function moveSeatMapTooltip(e) {
+    const tip = els.seatMapTooltip;
+    if (!tip || tip.hidden) return;
+    const gap = 16;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const rect = tip.getBoundingClientRect();
+    let left = e.clientX + gap;
+    let top = e.clientY + gap;
+    if (left + rect.width + 10 > vw) left = e.clientX - rect.width - gap;
+    if (top + rect.height + 10 > vh) top = e.clientY - rect.height - gap;
+    tip.style.left = Math.max(8, left) + 'px';
+    tip.style.top = Math.max(8, top) + 'px';
+  }
+  function hideSeatMapTooltip() {
+    if (els.seatMapTooltip) els.seatMapTooltip.hidden = true;
+  }
+
   function bindSeatMapDrag() {
-    $$('[data-map-table-id]').forEach((node) => {
+    $('[data-map-table-id]').forEach((node) => {
+      node.onmouseenter = (e) => showSeatMapTooltip(e, node.dataset.mapTableId);
+      node.onmousemove = moveSeatMapTooltip;
+      node.onmouseleave = hideSeatMapTooltip;
       node.onpointerdown = (e) => {
+        hideSeatMapTooltip();
         if (e.pointerType === 'mouse' && e.button !== 0) return;
         e.preventDefault();
         const table = tableById(node.dataset.mapTableId);
