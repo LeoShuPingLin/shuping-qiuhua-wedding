@@ -6,6 +6,15 @@
   const cfg = window.WEDDING_APP_CONFIG || {};
   const EVENT_ID = cfg.eventId || 'shu-qiu-2026';
   const MAX_HISTORY = 20;
+  const VENUE_SLOTS = [
+    { label:'主桌位', x:39.66, y:21.85 },
+    { label:'左區 1', x:13.45, y:37.17 }, { label:'左中區 1', x:29.24, y:37.17 }, { label:'中區 1', x:51.09, y:37.17 },
+    { label:'左區 2', x:13.45, y:48.81 }, { label:'左中區 2', x:29.24, y:48.81 }, { label:'中區 2', x:51.09, y:48.81 },
+    { label:'左區 3', x:13.45, y:60.57 }, { label:'左中區 3', x:29.24, y:60.57 }, { label:'中區 3', x:51.09, y:60.57 },
+    { label:'左區 4', x:13.45, y:72.21 }, { label:'左中區 4', x:29.24, y:72.21 }, { label:'中區 4', x:51.09, y:72.21 },
+    { label:'右區 1', x:67.06, y:34.68 }, { label:'右區 2', x:67.06, y:45.49 }, { label:'右區 3', x:67.06, y:56.06 },
+    { label:'右區 4', x:67.06, y:67.10 }, { label:'右區 5', x:67.06, y:77.91 }
+  ];
   let db = null;
   let currentSession = null;
   let currentMember = null;
@@ -28,7 +37,8 @@
     stats: $('#stats'), board: $('#board'), unassigned: $('#unassignedList'), other: $('#otherList'),
     unassignedCount: $('#unassignedCount'), otherCount: $('#otherCount'), search: $('#searchInput'),
     sideFilter: $('#sideFilter'), sizeFilter: $('#sizeFilter'), saveStatus: $('#saveStatus'), lastSync: $('#lastSync'),
-    toast: $('#toast'), fileInput: $('#fileInput'), restoreInput: $('#restoreInput'), loadingDialog: $('#loadingDialog'), loadingText: $('#loadingText')
+    toast: $('#toast'), fileInput: $('#fileInput'), restoreInput: $('#restoreInput'), loadingDialog: $('#loadingDialog'), loadingText: $('#loadingText'),
+    plannerView: $('#plannerView'), seatmapView: $('#seatmapView'), venueMap: $('#venueMap'), venueSlots: $('#venueSlots'), mapTableLayer: $('#mapTableLayer')
   };
 
   function escapeHtml(s = '') {
@@ -209,7 +219,7 @@
       table_prefix: state.settings.table_prefix,
       next_table_no: state.settings.next_table_no
     };
-    const tables = state.tables.map(({id,name,capacity,is_locked,sort_order}) => ({id,name,capacity,is_locked,sort_order})).sort((a,b) => a.id.localeCompare(b.id));
+    const tables = state.tables.map(({id,name,capacity,is_locked,sort_order,map_x,map_y}) => ({id,name,capacity,is_locked,sort_order,map_x,map_y})).sort((a,b) => a.id.localeCompare(b.id));
     const guests = state.guests.map(({id,name,party_size,side,attendance,child_seats,companions,notes,table_id,sort_order,source,source_key}) => ({id,name,party_size,side,attendance,child_seats,companions,notes,table_id,sort_order,source,source_key})).sort((a,b) => a.id.localeCompare(b.id));
     return JSON.stringify({settings,tables,guests});
   }
@@ -241,6 +251,7 @@
     renderStats();
     renderSidebar();
     renderBoard();
+    renderSeatMap();
     syncSettings();
     initSortables();
     applyFilters();
@@ -301,6 +312,129 @@
     bindGuestClicks();
     bindTableActions();
   }
+
+  function clampMap(v, min = 5, max = 95) { return Math.min(max, Math.max(min, Number(v) || 0)); }
+  function defaultMapPosition(index) {
+    if (VENUE_SLOTS[index]) return VENUE_SLOTS[index];
+    const extra = index - VENUE_SLOTS.length;
+    return { label:`延伸位 ${extra + 1}`, x:76 + (extra % 2) * 9, y:28 + Math.floor(extra / 2) * 10 };
+  }
+  function tableMapPosition(t, index) {
+    const fallback = defaultMapPosition(index);
+    const x = Number.isFinite(Number(t.map_x)) ? Number(t.map_x) : fallback.x;
+    const y = Number.isFinite(Number(t.map_y)) ? Number(t.map_y) : fallback.y;
+    return { x: clampMap(x), y: clampMap(y), label: fallback.label };
+  }
+  function renderSeatMap() {
+    if (!els.venueSlots || !els.mapTableLayer) return;
+    els.venueSlots.innerHTML = VENUE_SLOTS.map((s, i) =>
+      `<div class="venue-slot" style="left:${s.x}%;top:${s.y}%"><span>${i + 1}</span></div>`
+    ).join('');
+
+    els.mapTableLayer.innerHTML = state.tables.map((t, i) => {
+      const pos = tableMapPosition(t, i);
+      const seated = tableCount(t.id);
+      const full = seated === +t.capacity;
+      const over = seated > +t.capacity;
+      return `<button type="button" class="map-table ${full ? 'full' : ''} ${over ? 'over' : ''}" data-map-table-id="${t.id}"
+        style="left:${pos.x}%;top:${pos.y}%" title="拖曳調整 ${escapeHtml(t.name)} 的位置">
+        <b>${escapeHtml(t.name)}</b><span>${seated} / ${t.capacity} 人</span>
+      </button>`;
+    }).join('');
+    bindSeatMapDrag();
+  }
+  function bindSeatMapDrag() {
+    $$('[data-map-table-id]').forEach((node) => {
+      node.onpointerdown = (e) => {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        e.preventDefault();
+        const table = tableById(node.dataset.mapTableId);
+        if (!table || !els.venueMap) return;
+        const rect = els.venueMap.getBoundingClientRect();
+        let x = parseFloat(node.style.left) || 50;
+        let y = parseFloat(node.style.top) || 50;
+        node.classList.add('moving');
+        try { node.setPointerCapture(e.pointerId); } catch {}
+
+        const move = (ev) => {
+          x = clampMap(((ev.clientX - rect.left) / rect.width) * 100, 5.5, 94.5);
+          y = clampMap(((ev.clientY - rect.top) / rect.height) * 100, 8, 88);
+          node.style.left = x.toFixed(2) + '%';
+          node.style.top = y.toFixed(2) + '%';
+        };
+        const end = async () => {
+          node.classList.remove('moving');
+          node.removeEventListener('pointermove', move);
+          node.removeEventListener('pointerup', end);
+          node.removeEventListener('pointercancel', end);
+          await mutate('儲存座位圖位置', () => db.from('wedding_tables')
+            .update({ map_x:+x.toFixed(2), map_y:+y.toFixed(2) })
+            .eq('id', table.id).eq('event_id', EVENT_ID), { takeSnapshot:false });
+        };
+        node.addEventListener('pointermove', move);
+        node.addEventListener('pointerup', end);
+        node.addEventListener('pointercancel', end);
+      };
+    });
+  }
+  async function resetSeatMap() {
+    if (!state.tables.length) return;
+    if (!confirm('將所有桌次放回 A 廳示意圖的預設位置？目前自訂位置會被覆蓋。')) return;
+    await mutate('重設座位圖', async () => {
+      const results = await Promise.all(state.tables.map((t, i) => {
+        const p = defaultMapPosition(i);
+        return db.from('wedding_tables').update({ map_x:p.x, map_y:p.y }).eq('id', t.id).eq('event_id', EVENT_ID);
+      }));
+      return results.find((r) => r.error) || { error:null };
+    }, { takeSnapshot:false });
+  }
+  function switchView(view) {
+    const isMap = view === 'seatmap';
+    els.plannerView.hidden = isMap;
+    els.seatmapView.hidden = !isMap;
+    $$('[data-view-tab]').forEach((b) => b.classList.toggle('active', b.dataset.viewTab === view));
+    if (isMap) renderSeatMap();
+  }
+  function exportSeatMapExcel() {
+    if (!window.XLSX) return toast('Excel 元件載入失敗，請確認網路');
+    const tableRows = state.tables.map((t, i) => {
+      const p = tableMapPosition(t, i);
+      return {
+        圖上順序: i + 1,
+        場地位置: defaultMapPosition(i).label,
+        桌次: t.name,
+        已排人數: tableCount(t.id),
+        座位上限: t.capacity,
+        X百分比: +p.x.toFixed(2),
+        Y百分比: +p.y.toFixed(2)
+      };
+    });
+    const guestRows = [];
+    state.tables.forEach((t) => {
+      state.guests
+        .filter((g) => g.attendance === 'dinner' && g.table_id === t.id)
+        .forEach((g) => guestRows.push({
+          桌次:t.name, 姓名:g.name, 人數:g.party_size, 親友方:sideLabel(g.side),
+          同行者:g.companions || '', 兒童座椅:g.child_seats || 0, 備註:g.notes || ''
+        }));
+    });
+    const unassigned = state.guests.filter((g) => g.attendance === 'dinner' && !g.table_id);
+    unassigned.forEach((g) => guestRows.push({
+      桌次:'尚未分桌', 姓名:g.name, 人數:g.party_size, 親友方:sideLabel(g.side),
+      同行者:g.companions || '', 兒童座椅:g.child_seats || 0, 備註:g.notes || ''
+    }));
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(tableRows), '座位配置');
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(guestRows), '桌次名單');
+    XLSX.writeFile(wb, `書平秋華_座位安排_${new Date().toISOString().slice(0,10)}.xlsx`);
+    toast('已匯出座位安排 Excel');
+  }
+  function printSeatMap() {
+    document.body.classList.add('print-seatmap');
+    setTimeout(() => window.print(), 60);
+  }
+  window.addEventListener('afterprint', () => document.body.classList.remove('print-seatmap'));
+
   function bindGuestClicks() {
     $$('[data-edit-guest]').forEach((btn) => btn.onclick = (e) => { e.stopPropagation(); openGuest(btn.dataset.editGuest); });
   }
@@ -701,6 +835,11 @@
       const table_prefix = e.target.value.trim() || '第';
       await mutate('更新桌名前綴', () => db.from('wedding_settings').update({ table_prefix }).eq('event_id', EVENT_ID));
     };
+    $$('[data-view-tab]').forEach((btn) => btn.onclick = () => switchView(btn.dataset.viewTab));
+    $('#resetSeatMapBtn').onclick = resetSeatMap;
+    $('#seatMapExcelBtn').onclick = exportSeatMapExcel;
+    $('#printSeatMapBtn').onclick = printSeatMap;
+
     $('#applyCapBtn').onclick = async () => {
       const cap = Math.max(1, +$('#defaultCapacity').value || 10);
       const ids = state.tables.filter((t) => !t.is_locked).map((t) => t.id);
