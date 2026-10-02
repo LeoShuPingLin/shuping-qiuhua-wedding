@@ -75,3 +75,46 @@ body.busy{cursor:progress}.status-error{color:var(--danger)!important}.status-sa
 
 /* Ensure login/app visibility states override component display rules */
 .auth-shell[hidden], .app[hidden]{display:none!important}
+
+
+/* Seat map tab */
+.view-tabs{display:flex;gap:8px;margin:0 0 14px;border-bottom:1px solid var(--line);padding:0 2px}
+.view-tab{border:0;background:transparent;color:var(--muted);padding:11px 16px 10px;font-weight:800;border-bottom:3px solid transparent;cursor:pointer}
+.view-tab.active{color:var(--rose);border-bottom-color:var(--rose)}
+.seatmap-view[hidden],#plannerView[hidden]{display:none!important}
+.map-toolbar{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px 18px;margin-bottom:14px;box-shadow:var(--shadow)}
+.map-toolbar h2{margin:0 0 4px;font-size:22px}.map-toolbar p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+.map-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.venue-map-shell{display:flex;justify-content:center;overflow:auto;padding:14px;background:#f7f5f4;border:1px solid var(--line);border-radius:20px}
+.venue-map{position:relative;width:min(100%,650px);aspect-ratio:595/842;background:#fff;border:3px solid #b9b9b9;box-shadow:0 12px 34px rgba(50,42,44,.08);overflow:hidden;touch-action:none;user-select:none}
+.venue-label{position:absolute;border:1px solid #d5d5d5;background:rgba(255,255,255,.94);display:grid;place-items:center;font-family:"Noto Serif TC","Microsoft JhengHei",serif;z-index:2}
+.audio-room{left:0;top:0;width:22%;height:9%;font-size:clamp(14px,2.2vw,22px)}
+.stage{left:35%;top:0;width:29%;height:9%;font-size:clamp(16px,2.4vw,24px)}
+.work-area{left:0;bottom:0;width:39%;height:8%;font-size:clamp(14px,2.2vw,22px)}
+.backdrop-area{left:39%;bottom:0;width:29%;height:5%;font-size:clamp(12px,1.9vw,19px)}
+.venue-slots,.map-table-layer{position:absolute;inset:0}
+.venue-slot{position:absolute;width:17%;aspect-ratio:1;border:1.5px solid #c8c8c8;border-radius:50%;transform:translate(-50%,-50%);display:grid;place-items:center;color:#d0d0d0;font-size:11px;background:rgba(255,255,255,.18)}
+.venue-slot:first-child{width:21%}
+.venue-slot span{opacity:.55}
+.map-table{position:absolute;width:15.5%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%);border:2px solid #c995a2;background:rgba(255,246,248,.96);box-shadow:0 5px 14px rgba(89,56,64,.14);z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:5px;color:var(--ink);cursor:grab;touch-action:none}
+.map-table:first-child{width:18%}
+.map-table:hover{border-color:var(--rose);box-shadow:0 7px 18px rgba(89,56,64,.2)}.map-table.moving{cursor:grabbing;z-index:20;transform:translate(-50%,-50%) scale(1.06)}
+.map-table b{font-size:clamp(10px,1.7vw,15px);line-height:1.1;max-width:90%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.map-table span{font-size:clamp(8px,1.2vw,11px);color:var(--muted);white-space:nowrap}
+.map-table.full{border-color:#7e9a89;background:rgba(242,250,245,.97)}.map-table.over{border-color:#c96e55;background:rgba(255,242,237,.98)}
+.map-note{text-align:center;color:var(--muted);font-size:12px;margin-top:10px}
+@media(max-width:850px){
+  .view-tabs{position:sticky;top:6px;z-index:31;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-radius:12px;padding:0 6px}
+  .map-toolbar{align-items:flex-start;flex-direction:column}.map-actions{width:100%;justify-content:flex-start}.map-actions .btn{flex:1 1 auto}
+  .venue-map-shell{padding:7px}.map-table{width:17%}.map-table:first-child{width:20%}
+}
+@page{size:A4 portrait;margin:8mm}
+@media print{
+  body.print-seatmap{background:#fff}
+  body.print-seatmap .hero,body.print-seatmap .view-tabs,body.print-seatmap #plannerView,body.print-seatmap .map-toolbar,body.print-seatmap .map-note,body.print-seatmap .account-box,body.print-seatmap .syncbar{display:none!important}
+  body.print-seatmap .app{display:block!important;max-width:none;padding:0}
+  body.print-seatmap #seatmapView{display:block!important}
+  body.print-seatmap .venue-map-shell{padding:0;border:0;background:#fff;overflow:visible}
+  body.print-seatmap .venue-map{width:100%;max-height:270mm;box-shadow:none}
+  body.print-seatmap .map-table{box-shadow:none;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
