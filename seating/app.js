@@ -913,14 +913,14 @@
     const unassigned = state.guests
       .filter((g) => g.attendance === 'dinner' && !g.table_id)
       .map((g) => ({
-        姓名／群組: g.name,
+        '姓名／群組': g.name,
         人數: g.party_size,
         親友方: sideLabel(g.side),
         同行者: g.companions || '',
         兒童座椅: g.child_seats || 0,
         備註: g.notes || ''
       }));
-    const unassignedWs = XLSX.utils.json_to_sheet(unassigned.length ? unassigned : [{ 姓名／群組:'目前無尚未分桌賓客' }]);
+    const unassignedWs = XLSX.utils.json_to_sheet(unassigned.length ? unassigned : [{ '姓名／群組':'目前無尚未分桌賓客' }]);
     unassignedWs['!cols'] = [
       { wch: 24 }, { wch: 8 }, { wch: 12 }, { wch: 32 }, { wch: 12 }, { wch: 30 }
     ];
@@ -930,14 +930,14 @@
     const other = state.guests
       .filter((g) => g.attendance !== 'dinner')
       .map((g) => ({
-        姓名／群組: g.name,
+        '姓名／群組': g.name,
         人數: g.party_size,
         親友方: sideLabel(g.side),
         出席狀況: attendanceLabel(g.attendance),
         同行者: g.companions || '',
         備註: g.notes || ''
       }));
-    const otherWs = XLSX.utils.json_to_sheet(other.length ? other : [{ 姓名／群組:'目前無非晚宴／未確認資料' }]);
+    const otherWs = XLSX.utils.json_to_sheet(other.length ? other : [{ '姓名／群組':'目前無非晚宴／未確認資料' }]);
     otherWs['!cols'] = [
       { wch: 24 }, { wch: 8 }, { wch: 12 }, { wch: 14 }, { wch: 32 }, { wch: 30 }
     ];
