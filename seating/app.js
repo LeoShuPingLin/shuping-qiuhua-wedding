@@ -393,7 +393,7 @@
       const over = seated > +t.capacity;
       return `<button type="button" class="map-table ${full ? 'full' : ''} ${over ? 'over' : ''}" data-map-table-id="${t.id}"
         data-slot-index="${pos.slotIndex}" style="left:${pos.x}%;top:${pos.y}%" title="拖曳 ${escapeHtml(t.name)} 到另一個桌位">
-        <b>${escapeHtml(t.name)}</b><span>${seated} / ${t.capacity} 人</span>
+        <b class="${String(t.name || '').length >= 9 ? 'long-name' : String(t.name || '').length >= 6 ? 'medium-name' : ''}">${escapeHtml(t.name)}</b><span>${seated} / ${t.capacity} 人</span>
       </button>`;
     }).join('');
     bindSeatMapDrag();
