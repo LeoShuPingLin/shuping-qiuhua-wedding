@@ -4,8 +4,23 @@
   "main": "worker.mjs",
   "compatibility_date": "2026-10-04",
   "workers_dev": true,
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "USAGE_LIMITER",
+        "class_name": "UsageLimiter"
+      }
+    ]
+  },
+  "exports": {
+    "UsageLimiter": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    }
+  },
   "vars": {
     "ALLOWED_ORIGIN": "https://leoshupinglin.github.io",
-    "OPENAI_MODEL": "gpt-6.1-sol"
+    "CARD_TOTAL_LIMIT": "100",
+    "CARD_DAILY_LIMIT": "30"
   }
 }
