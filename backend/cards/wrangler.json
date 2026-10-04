@@ -20,7 +20,7 @@
   },
   "vars": {
     "ALLOWED_ORIGIN": "https://leoshupinglin.github.io",
-    "CARD_TOTAL_LIMIT": "100",
-    "CARD_DAILY_LIMIT": "30"
+    "CARD_TOTAL_LIMIT": "500",
+    "CARD_DAILY_LIMIT": "500"
   }
 }
