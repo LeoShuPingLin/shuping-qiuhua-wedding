@@ -5,8 +5,8 @@ const MODELS = Object.freeze({
   premium: Object.freeze({ id: 'gpt-6-astra', label: 'GPT-6 Astra' }),
   balanced: Object.freeze({ id: 'gpt-6.1-sol', label: 'GPT-6.1 Sol' })
 });
-const DEFAULT_TOTAL_LIMIT = 100;
-const DEFAULT_DAILY_LIMIT = 30;
+const DEFAULT_TOTAL_LIMIT = 500;
+const DEFAULT_DAILY_LIMIT = 500;
 const MAX_BODY_BYTES = 32_000;
 const RATE_WINDOW_MS = 60_000;
 const RATE_LIMIT = 20;
