@@ -1,6 +1,12 @@
 const OPENAI_ENDPOINT = 'https://api.openai.com/v1/responses';
 const DEFAULT_ORIGIN = 'https://leoshupinglin.github.io';
-const DEFAULT_MODEL = 'gpt-6.1-sol';
+const DEFAULT_QUALITY = 'premium';
+const MODELS = Object.freeze({
+  premium: Object.freeze({ id: 'gpt-6-astra', label: 'GPT-6 Astra' }),
+  balanced: Object.freeze({ id: 'gpt-6.1-sol', label: 'GPT-6.1 Sol' })
+});
+const DEFAULT_TOTAL_LIMIT = 100;
+const DEFAULT_DAILY_LIMIT = 30;
 const MAX_BODY_BYTES = 32_000;
 const RATE_WINDOW_MS = 60_000;
 const RATE_LIMIT = 20;
@@ -58,6 +64,7 @@ export function normalizePayload(raw) {
     relation: oneOf(source.relation, ['好朋友', '學會夥伴', '親戚', '同事', '師長', '其他'], '好朋友', '關係'),
     generation: oneOf(source.generation, ['長輩', '平輩', '晚輩'], '平輩', '輩分'),
     closeness: oneOf(source.closeness, ['非常親近', '熟悉、常互動', '較少互動'], '非常親近', '熟悉程度'),
+    quality: oneOf(source.quality, Object.keys(MODELS), DEFAULT_QUALITY, 'AI 寫作品質'),
     traits: selectedTraits(source.traits),
     story: boundedString(source.story, '自由筆記', 8_000, { required: true }),
     tone: oneOf(source.tone, ['AI 自動判斷', '自然溫馨', '感性一點', '輕鬆帶笑', '真誠含蓄'], 'AI 自動判斷', '語氣'),
@@ -144,7 +151,7 @@ function schemaFor(action) {
   };
 }
 
-function inputFor(payload, retry) {
+function inputFor(payload) {
   const input = {
     task: payload.action === 'generate' ? '產生兩個版本' : '修改選用版本',
     recipient_name: payload.profile.name,
@@ -163,7 +170,6 @@ function inputFor(payload, retry) {
     input.current_card = payload.text;
     input.revision_request = payload.instruction;
   }
-  if (retry) input.length_correction = retry;
   return JSON.stringify(input);
 }
 
@@ -177,9 +183,15 @@ function extractOutputText(data) {
   throw new HttpError(502, 'empty_model_response', 'AI 沒有回傳可用文字，請再試一次。');
 }
 
-async function callOpenAI(payload, env, fetchImpl, retry) {
-  const model = env.OPENAI_MODEL || DEFAULT_MODEL;
-  const maxOutputTokens = Math.min(3_000, Math.max(800, payload.profile.maxLength * (payload.action === 'generate' ? 4 : 2) + 400));
+function modelFor(payload) {
+  return MODELS[payload.profile.quality] || MODELS[DEFAULT_QUALITY];
+}
+
+async function callOpenAI(payload, env, fetchImpl) {
+  const model = modelFor(payload);
+  const maxOutputTokens = payload.action === 'generate'
+    ? Math.min(3_200, Math.max(1_800, payload.profile.maxLength * 4 + 1_000))
+    : Math.min(2_200, Math.max(1_200, payload.profile.maxLength * 3 + 600));
   let upstream;
   try {
     upstream = await fetchImpl(OPENAI_ENDPOINT, {
@@ -189,9 +201,9 @@ async function callOpenAI(payload, env, fetchImpl, retry) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model,
+        model: model.id,
         instructions: buildInstructions(payload),
-        input: inputFor(payload, retry),
+        input: inputFor(payload),
         reasoning: { effort: 'low' },
         text: {
           format: {
@@ -222,13 +234,29 @@ async function callOpenAI(payload, env, fetchImpl, retry) {
     throw new HttpError(502, 'openai_error', 'AI 產生文字時發生錯誤，請稍後再試。');
   }
 
+  if (data?.status === 'incomplete') {
+    const reason = data?.incomplete_details?.reason || 'unknown';
+    console.error('OpenAI response incomplete', { reason, model: model.id });
+    if (reason === 'max_output_tokens') {
+      throw new HttpError(502, 'incomplete_model_response', 'AI 這次的回覆未完成，沒有扣第二次呼叫；請再按一次產生。');
+    }
+    throw new HttpError(502, 'incomplete_model_response', 'AI 這次的回覆未完成，請再試一次。');
+  }
+  if (data?.status && data.status !== 'completed') {
+    console.error('Unexpected OpenAI response status', { status: data.status, model: model.id });
+    throw new HttpError(502, 'incomplete_model_response', 'AI 這次沒有完成回覆，請再試一次。');
+  }
+
+  const refused = data?.output?.some(item => item?.content?.some(content => content?.type === 'refusal'));
+  if (refused) throw new HttpError(422, 'model_refusal', 'AI 無法處理這份內容，請調整自由筆記後再試。');
+
   let parsed;
   try { parsed = JSON.parse(extractOutputText(data)); }
   catch (error) {
     if (error instanceof HttpError) throw error;
     throw new HttpError(502, 'invalid_model_response', 'AI 回覆格式不正確，請再試一次。');
   }
-  return parsed;
+  return { parsed, model };
 }
 
 function resultTexts(payload, result) {
@@ -291,6 +319,110 @@ function applyRateLimit(request, now, store) {
   if (entry.count > RATE_LIMIT) throw new HttpError(429, 'rate_limited', '短時間使用次數太多，請稍等一下再試。');
 }
 
+function positiveLimit(value, fallback) {
+  const parsed = Number(value);
+  return Number.isInteger(parsed) && parsed > 0 && parsed <= 100_000 ? parsed : fallback;
+}
+
+function taipeiDate(timestamp) {
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Taipei',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).format(new Date(timestamp));
+}
+
+function quotaSnapshot(totalUsed, todayUsed, totalLimit, dailyLimit, date, allowed = true, code = null, message = null) {
+  return {
+    allowed,
+    code,
+    message,
+    total: {
+      used: totalUsed,
+      limit: totalLimit,
+      remaining: Math.max(0, totalLimit - totalUsed)
+    },
+    today: {
+      date,
+      used: todayUsed,
+      limit: dailyLimit,
+      remaining: Math.max(0, dailyLimit - todayUsed)
+    }
+  };
+}
+
+export class UsageLimiter {
+  constructor(ctx, env) {
+    this.ctx = ctx;
+    this.env = env;
+  }
+
+  async fetch(request) {
+    if (request.method !== 'POST') return Response.json({ error: 'method_not_allowed' }, { status: 405 });
+
+    let body;
+    try { body = await request.json(); } catch { return Response.json({ error: 'invalid_json' }, { status: 400 }); }
+    const operation = body?.operation;
+    if (!['status', 'reserve'].includes(operation)) return Response.json({ error: 'invalid_operation' }, { status: 400 });
+
+    const timestamp = Number.isFinite(body?.timestamp) ? body.timestamp : Date.now();
+    const date = taipeiDate(timestamp);
+    const dailyKey = `daily:${date}`;
+    const totalLimit = positiveLimit(this.env.CARD_TOTAL_LIMIT, DEFAULT_TOTAL_LIMIT);
+    const dailyLimit = positiveLimit(this.env.CARD_DAILY_LIMIT, DEFAULT_DAILY_LIMIT);
+
+    const snapshot = await this.ctx.storage.transaction(async txn => {
+      const [storedTotal, storedToday] = await Promise.all([txn.get('total'), txn.get(dailyKey)]);
+      let totalUsed = Number.isInteger(storedTotal) && storedTotal >= 0 ? storedTotal : 0;
+      let todayUsed = Number.isInteger(storedToday) && storedToday >= 0 ? storedToday : 0;
+
+      if (operation === 'reserve') {
+        if (totalUsed >= totalLimit) {
+          return quotaSnapshot(totalUsed, todayUsed, totalLimit, dailyLimit, date, false, 'total_limit_reached', `已達總共 ${totalLimit} 次的付費呼叫上限。`);
+        }
+        if (todayUsed >= dailyLimit) {
+          return quotaSnapshot(totalUsed, todayUsed, totalLimit, dailyLimit, date, false, 'daily_limit_reached', `今天已達 ${dailyLimit} 次的付費呼叫上限，明天（台灣時間）可再使用。`);
+        }
+
+        totalUsed += 1;
+        todayUsed += 1;
+        await Promise.all([txn.put('total', totalUsed), txn.put(dailyKey, todayUsed)]);
+      }
+
+      return quotaSnapshot(totalUsed, todayUsed, totalLimit, dailyLimit, date);
+    });
+
+    return Response.json(snapshot, { status: snapshot.allowed ? 200 : 429 });
+  }
+}
+
+async function durableUsageClient(env, operation, timestamp) {
+  if (!env.USAGE_LIMITER?.idFromName || !env.USAGE_LIMITER?.get) {
+    throw new HttpError(503, 'usage_limiter_missing', 'Worker 尚未設定付費呼叫上限，為避免失控已停止呼叫 AI。');
+  }
+
+  let response;
+  try {
+    const id = env.USAGE_LIMITER.idFromName('wedding-card-global-limit');
+    response = await env.USAGE_LIMITER.get(id).fetch('https://usage-limiter.internal/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ operation, timestamp })
+    });
+  } catch {
+    throw new HttpError(503, 'usage_limiter_unavailable', '目前無法確認剩餘呼叫次數，為避免超支已停止呼叫 AI。');
+  }
+
+  let data;
+  try { data = await response.json(); } catch { data = null; }
+  if (!response.ok) {
+    if (response.status === 429 && data?.message) throw new HttpError(429, data.code || 'usage_limit_reached', data.message);
+    throw new HttpError(503, 'usage_limiter_unavailable', '目前無法確認剩餘呼叫次數，為避免超支已停止呼叫 AI。');
+  }
+  return data;
+}
+
 async function parseBody(request) {
   const announced = Number(request.headers.get('Content-Length') || 0);
   if (announced > MAX_BODY_BYTES) throw new HttpError(413, 'body_too_large', '送出的內容太大。');
@@ -299,7 +431,7 @@ async function parseBody(request) {
   try { return JSON.parse(raw); } catch { throw new HttpError(400, 'invalid_json', '請求不是正確的 JSON 格式。'); }
 }
 
-export function createHandler({ fetchImpl = globalThis.fetch, now = Date.now, rateStore = new Map() } = {}) {
+export function createHandler({ fetchImpl = globalThis.fetch, now = Date.now, rateStore = new Map(), usageClient = durableUsageClient } = {}) {
   return async function handle(request, env) {
     const requestId = crypto.randomUUID();
     const origin = request.headers.get('Origin') || '';
@@ -316,26 +448,24 @@ export function createHandler({ fetchImpl = globalThis.fetch, now = Date.now, ra
       if (url.pathname === '/health') {
         if (request.method !== 'GET') throw new HttpError(405, 'method_not_allowed', '此功能只接受 GET。');
         if (!env.OPENAI_API_KEY) throw new HttpError(503, 'worker_not_configured', 'Worker 尚未設定 OpenAI API Key。');
-        return json({ ok: true, model: env.OPENAI_MODEL || DEFAULT_MODEL }, 200, origin, requestId);
+        const usage = await usageClient(env, 'status', now());
+        return json({
+          ok: true,
+          models: Object.fromEntries(Object.entries(MODELS).map(([quality, model]) => [quality, model.id])),
+          usage,
+          apiCallsPerClick: 1
+        }, 200, origin, requestId);
       }
 
       if (request.method !== 'POST') throw new HttpError(405, 'method_not_allowed', '此功能只接受 POST。');
       if (!env.OPENAI_API_KEY) throw new HttpError(503, 'worker_not_configured', 'Worker 尚未設定 OpenAI API Key。');
       const payload = normalizePayload(await parseBody(request));
+      const usage = await usageClient(env, 'reserve', now());
+      const { parsed: result, model } = await callOpenAI(payload, env, fetchImpl);
+      const texts = resultTexts(payload, result);
+      const status = lengthStatus(payload, texts);
 
-      let result = await callOpenAI(payload, env, fetchImpl);
-      let texts = resultTexts(payload, result);
-      let status = lengthStatus(payload, texts);
-      let retried = false;
-      if (!status.withinRange) {
-        retried = true;
-        const correction = `上一版字數為 ${status.counts.join('、')} 字，未全部符合 ${payload.profile.minLength}～${payload.profile.maxLength} 字。請保留事實與語氣，重新寫到範圍內。上一版：${JSON.stringify(result)}`;
-        result = await callOpenAI(payload, env, fetchImpl, correction);
-        texts = resultTexts(payload, result);
-        status = lengthStatus(payload, texts);
-      }
-
-      return json({ ...result, ...status, retried }, 200, origin, requestId);
+      return json({ ...result, ...status, model: model.id, quality: payload.profile.quality, usage, apiCalls: 1 }, 200, origin, requestId);
     } catch (error) {
       const known = error instanceof HttpError;
       if (!known) console.error('Wedding card worker error', { requestId, name: error?.name || 'Error' });
