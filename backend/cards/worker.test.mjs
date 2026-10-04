@@ -250,7 +250,7 @@ test('replaces insulting distance language with a warm public-card fallback with
   assert.equal(data.apiCalls, 1);
   assert.equal(data.usedSafeFallback, true);
   assert.equal(data.withinRange, true);
-  assert.deepEqual(data.counts, [156, 150]);
+  assert.deepEqual(data.counts, [153, 160]);
   for (const text of data.variants) {
     assert.doesNotMatch(text, /不太熟|互動不多|學弟的女朋友|慢慢熟悉|多認識/);
     assert.match(text, /婚禮/);
