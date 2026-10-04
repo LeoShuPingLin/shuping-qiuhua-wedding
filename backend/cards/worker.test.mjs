@@ -101,6 +101,10 @@ test('instructions tell the model to silently parse notes without inventing fact
   assert.match(instructions, /書平/);
   assert.match(instructions, /熟悉程度.*只是寫作參數/);
   assert.match(instructions, /寧可使用溫暖自然的婚宴小卡公版/);
+  assert.match(instructions, /不得為了湊字/);
+  assert.match(instructions, /同一意思只說一次/);
+  assert.match(instructions, /結尾祝福原則上只有一句、最多兩個祝福面向/);
+  assert.match(instructions, /小美好、幸福快樂、天天開心/);
   assert.match(instructions, /既然不熟，為什麼邀請我/);
 });
 
@@ -250,12 +254,41 @@ test('replaces insulting distance language with a warm public-card fallback with
   assert.equal(data.apiCalls, 1);
   assert.equal(data.usedSafeFallback, true);
   assert.equal(data.withinRange, true);
-  assert.deepEqual(data.counts, [153, 160]);
+  assert.deepEqual(data.counts, [150, 151]);
   for (const text of data.variants) {
     assert.doesNotMatch(text, /不太熟|互動不多|學弟的女朋友|慢慢熟悉|多認識/);
     assert.match(text, /婚禮/);
     assert.match(text, /祝福/);
+    assert.doesNotMatch(text, /願望實現|小美好|幸福快樂|天天開心/);
   }
+});
+
+test('short public-card fallback fits the recommended low-context range without padding blessings', async () => {
+  const handler = createHandler({
+    fetchImpl: async () => openAIResponse({
+      variants: ['我們不太熟，沒有共同回憶。', '平常互動不多，以後再慢慢熟悉。']
+    }),
+    usageClient: makeUsageClient()
+  });
+  const response = await handler(workerRequest('/generate', {
+    body: {
+      action: 'generate',
+      profile: profile({
+        name: '芳瑜',
+        generation: '平輩',
+        closeness: '較少互動',
+        minLength: 120,
+        maxLength: 150,
+        story: '她是學弟的女朋友，明年準備結婚。'
+      })
+    }
+  }), ENV);
+  const data = await response.json();
+
+  assert.equal(response.status, 200);
+  assert.equal(data.usedSafeFallback, true);
+  assert.equal(data.withinRange, true);
+  assert.deepEqual(data.counts, [127, 130]);
 });
 
 test('revision returns one checked card and validates required text', async () => {
