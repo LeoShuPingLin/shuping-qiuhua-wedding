@@ -48,8 +48,8 @@ npx wrangler deploy
 
 `wrangler.json` 預設：
 
-- 總上限：100 次。
-- 每日上限：30 次（以台灣日期計算）。
+- 總上限：500 次。
+- 每日上限：500 次（以台灣日期計算）。
 
 達到任一上限時，Worker 會先擋住請求，不會呼叫 OpenAI。若確定要調整，可修改 `CARD_TOTAL_LIMIT` 或 `CARD_DAILY_LIMIT`，再重新部署；已使用次數不會因重新部署而歸零。
 
