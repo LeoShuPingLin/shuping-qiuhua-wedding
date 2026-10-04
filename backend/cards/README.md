@@ -2,6 +2,13 @@
 
 此 Worker 只接受 `https://leoshupinglin.github.io` 的請求，並在後端保管 OpenAI API Key。
 
+前端可選兩種模型：
+
+- `GPT-6 Astra`：精緻寫作，預設選項。
+- `GPT-6.1 Sol`：平衡省費。
+
+每次按下「產生」或「修改」最多只會送出 **1 次** OpenAI API 請求，不會在背景自動重試。一次產生兩個版本仍只算一次。
+
 ## 第一次部署
 
 在 Repository 根目錄開啟終端機：
@@ -13,6 +20,8 @@ npx wrangler deploy
 npx wrangler secret put OPENAI_API_KEY
 npx wrangler secret put CARD_ACCESS_TOKEN
 ```
+
+第一次部署也會自動建立一個 SQLite Durable Object，用來保存無法因換電腦、重整頁面而歸零的付費呼叫次數。
 
 - `OPENAI_API_KEY`：從 OpenAI Platform 建立的 Project API Key。
 - `CARD_ACCESS_TOKEN`：自訂一組至少 20 字元、只有書平與秋華知道的工具密碼；不要使用 OpenAI API Key。
@@ -32,6 +41,15 @@ https://wedding-thank-you-cards.你的帳號.workers.dev/generate
 cd backend/cards
 npx wrangler deploy
 ```
+
+## 付費呼叫硬上限
+
+`wrangler.json` 預設：
+
+- 總上限：100 次。
+- 每日上限：30 次（以台灣日期計算）。
+
+達到任一上限時，Worker 會先擋住請求，不會呼叫 OpenAI。若確定要調整，可修改 `CARD_TOTAL_LIMIT` 或 `CARD_DAILY_LIMIT`，再重新部署；已使用次數不會因重新部署而歸零。
 
 ## 本機測試
 
