@@ -94,7 +94,7 @@ export function buildInstructions(payload) {
     ? '彼此非常親近，可以自然呈現熟悉感與真心，但仍不得捏造回憶。'
     : profile.closeness === '熟悉、常互動'
       ? '彼此熟悉且常互動，語氣可以親切自然，但不要過度放大感情。'
-      : '彼此較少互動，請以真誠、得體的感謝為主，不得假裝有深厚交情或共同回憶。';
+      : '熟悉程度只用來降低私密回憶、內梗與過度親暱語氣的比例；成品必須直接以溫暖得體的婚宴感謝與祝福為主，絕對不可提起或暗示交情遠近。';
   const traits = profile.traits.length
     ? `個性線索為「${profile.traits.join('、')}」；用來理解語氣與選材，不可把形容詞逐項列入文章。`
     : '未指定個性線索，僅從自由筆記中判斷，且不得自行補充。';
@@ -120,6 +120,10 @@ export function buildInstructions(payload) {
 14. ${pronoun}
 15. 完整文字必須包含自然的稱呼「${profile.name}」與署名「${profile.signature}」。
 16. 字數計算包含稱呼、標點、內文與署名，不計空白及換行；每版必須介於 ${profile.minLength}～${profile.maxLength} 字。
+17. 「熟悉程度」只是寫作參數，絕對不是卡片內容。禁止寫出或暗示「不太熟、互動不多、較少聯絡、還不認識、沒有共同回憶、以後再慢慢熟悉」等疏離訊息，也不要評論雙方交情深淺。
+18. 若自由筆記提供的素材很少，寧可使用溫暖自然的婚宴小卡公版：感謝對方到場、分享喜悅、讓這天更溫暖，再送上真誠祝福；不可為了客製化而把「素材少」本身寫進卡片。
+19. 不要把收卡者只寫成「某人的伴侶／朋友」。若筆記只有這種身分資訊，不必硬寫進去，直接對收卡者本人表達謝意與祝福。
+20. 完稿前檢查：收卡者讀完不能感到被提醒「我們不熟」、被降低重要性，或產生「既然不熟，為什麼邀請我」的感受。
 
 ${action === 'generate'
     ? '請產生兩個完整版本。版本一自然溫馨；版本二多一點情感，但不肉麻。兩版必須有明顯不同的開頭、段落組織與表達方式，不可只換同義詞。'
@@ -259,16 +263,61 @@ async function callOpenAI(payload, env, fetchImpl) {
   return { parsed, model };
 }
 
+const DISTANCING_PATTERNS = [
+  /不(?:太)?熟(?:悉)?/u,
+  /(?:互動|聯絡|來往).{0,5}(?:不多|較少|很少)/u,
+  /(?:還|尚)?(?:沒有|沒)(?:太多|很多)?(?:機會)?(?:認識|相處|聊天)/u,
+  /(?:沒有|沒)(?:太多|什麼)?(?:交集|共同回憶)/u,
+  /(?:以後|往後|未來|有機會).{0,14}(?:多認識|再認識|更認識|多聊|熟悉彼此)/u,
+  /慢慢熟悉(?:彼此)?/u,
+  /不常(?:見面|碰面|聯絡|互動)/u,
+  /還不(?:太)?了解/u,
+  /(?:你|妳|您)是.{0,18}的(?:女|男)朋友/u,
+  /現在提起.{0,24}(?:女|男)朋友/u
+];
+
+function usesDistancingLanguage(text) {
+  const compact = String(text).replace(/\s/gu, '');
+  return DISTANCING_PATTERNS.some(pattern => pattern.test(compact));
+}
+
+function safePublicCard(profile, variant) {
+  const addressee = profile.pronoun === '用您' || profile.generation === '長輩' ? '您' : '你';
+  const bodies = [
+    `謝謝${addressee}今天來到我們的婚禮，陪我們一起分享這份喜悅。籌備婚禮的這段時間，我們更加感受到，能和珍惜的親友相聚，是一件很幸福的事。很開心今天有${addressee}的祝福與陪伴，讓這個重要的日子多了一份溫暖。希望今天的笑聲與美好片刻，也能成為${addressee}心中值得收藏的回憶。衷心祝福${addressee}平安順心，每一天都有幸福相伴。`,
+    `很開心能在今天和${addressee}分享我們的喜悅，也謝謝${addressee}特地前來，為這場婚禮增添一份溫暖。走到人生的新階段，我們越來越珍惜每一份真心的祝福，也很感謝有大家陪我們留下這段美好回憶。希望${addressee}今天能帶著愉快的心情，好好享受這場相聚；也把我們滿滿的祝福送給${addressee}，願往後的每個日子都平安順利，常有開心與幸福相伴。`
+  ];
+  const fillers = variant === 0
+    ? [`也祝福${addressee}天天開心。`, '願生活裡常有好事發生。', `把滿滿的祝福送給${addressee}。`]
+    : ['也願一切順心。', '願每一天都有好心情。', `讓幸福一直陪伴著${addressee}。`];
+  let body = bodies[variant] || bodies[0];
+  const render = value => `${profile.name}：\n${value}\n${profile.signature}`;
+  for (const filler of fillers) {
+    if (countCharacters(render(body)) >= profile.minLength) break;
+    if (countCharacters(render(`${body}${filler}`)) <= profile.maxLength) body += filler;
+  }
+  return render(body);
+}
+
 function resultTexts(payload, result) {
   if (payload.action === 'generate') {
     if (!Array.isArray(result?.variants) || result.variants.length !== 2 || !result.variants.every(value => typeof value === 'string' && value.trim())) {
       throw new HttpError(502, 'invalid_model_response', 'AI 回覆格式不正確，請再試一次。');
     }
-    result.variants = result.variants.map(value => value.trim());
+    let usedSafeFallback = false;
+    result.variants = result.variants.map((value, index) => {
+      const text = value.trim();
+      if (!usesDistancingLanguage(text)) return text;
+      usedSafeFallback = true;
+      return safePublicCard(payload.profile, index);
+    });
+    result.usedSafeFallback = usedSafeFallback;
     return result.variants;
   }
   if (typeof result?.text !== 'string' || !result.text.trim()) throw new HttpError(502, 'invalid_model_response', 'AI 回覆格式不正確，請再試一次。');
   result.text = result.text.trim();
+  result.usedSafeFallback = usesDistancingLanguage(result.text);
+  if (result.usedSafeFallback) result.text = safePublicCard(payload.profile, 0);
   return [result.text];
 }
 
