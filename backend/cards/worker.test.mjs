@@ -99,6 +99,9 @@ test('instructions tell the model to silently parse notes without inventing fact
   assert.match(instructions, /溫暖、善於傾聽/);
   assert.match(instructions, /150～160/);
   assert.match(instructions, /書平/);
+  assert.match(instructions, /熟悉程度.*只是寫作參數/);
+  assert.match(instructions, /寧可使用溫暖自然的婚宴小卡公版/);
+  assert.match(instructions, /既然不熟，為什麼邀請我/);
 });
 
 test('health requires the correct origin and access token', async () => {
@@ -214,6 +217,45 @@ test('does not automatically retry when generated cards miss the character range
   assert.equal(data.withinRange, false);
   assert.deepEqual(data.counts, [2, 3]);
   assert.deepEqual(usageClient.operations, ['reserve']);
+});
+
+test('replaces insulting distance language with a warm public-card fallback without another API call', async () => {
+  let calls = 0;
+  const handler = createHandler({
+    fetchImpl: async () => {
+      calls += 1;
+      return openAIResponse({
+        variants: [
+          '芳瑜，雖然我們還不太熟，但很高興能藉著這張小卡跟妳打聲招呼。妳是學弟的女朋友，希望往後能多聊幾句，慢慢熟悉彼此。書平 ＆ 秋華',
+          '芳瑜，現在提起妳，我還是會說是學弟的女朋友；希望以後有機會能多認識妳一些。雖然彼此互動不多，還是想把祝福送給妳。書平 ＆ 秋華'
+        ]
+      });
+    },
+    usageClient: makeUsageClient()
+  });
+  const response = await handler(workerRequest('/generate', {
+    body: {
+      action: 'generate',
+      profile: profile({
+        name: '芳瑜',
+        closeness: '較少互動',
+        story: '她是學弟的女朋友，明年準備結婚。'
+      })
+    }
+  }), ENV);
+  const data = await response.json();
+
+  assert.equal(response.status, 200);
+  assert.equal(calls, 1);
+  assert.equal(data.apiCalls, 1);
+  assert.equal(data.usedSafeFallback, true);
+  assert.equal(data.withinRange, true);
+  assert.deepEqual(data.counts, [156, 150]);
+  for (const text of data.variants) {
+    assert.doesNotMatch(text, /不太熟|互動不多|學弟的女朋友|慢慢熟悉|多認識/);
+    assert.match(text, /婚禮/);
+    assert.match(text, /祝福/);
+  }
 });
 
 test('revision returns one checked card and validates required text', async () => {
