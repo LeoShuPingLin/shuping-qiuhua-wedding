@@ -100,11 +100,13 @@ test('instructions tell the model to silently parse notes without inventing fact
   assert.match(instructions, /150～160/);
   assert.match(instructions, /書平/);
   assert.match(instructions, /熟悉程度.*只是寫作參數/);
-  assert.match(instructions, /寧可使用溫暖自然的婚宴小卡公版/);
+  assert.match(instructions, /公版母稿/);
   assert.match(instructions, /不得為了湊字/);
   assert.match(instructions, /同一意思只說一次/);
-  assert.match(instructions, /結尾祝福原則上只有一句、最多兩個祝福面向/);
-  assert.match(instructions, /小美好、幸福快樂、天天開心/);
+  assert.match(instructions, /禁止出現「小卡、卡片、寫這張小卡時/);
+  assert.match(instructions, /謝謝你今天來到我們的婚禮/);
+  assert.match(instructions, /客製內容.*直接融入母稿的中段/);
+  assert.match(instructions, /不要寫「寫這張小卡時/);
   assert.match(instructions, /既然不熟，為什麼邀請我/);
 });
 
@@ -254,12 +256,12 @@ test('replaces insulting distance language with a warm public-card fallback with
   assert.equal(data.apiCalls, 1);
   assert.equal(data.usedSafeFallback, true);
   assert.equal(data.withinRange, true);
-  assert.deepEqual(data.counts, [150, 151]);
+  assert.deepEqual(data.counts, [153, 153]);
   for (const text of data.variants) {
     assert.doesNotMatch(text, /不太熟|互動不多|學弟的女朋友|慢慢熟悉|多認識/);
     assert.match(text, /婚禮/);
     assert.match(text, /祝福/);
-    assert.doesNotMatch(text, /願望實現|小美好|幸福快樂|天天開心/);
+    assert.doesNotMatch(text, /願望實現|小美好|事事順心/);
   }
 });
 
@@ -288,7 +290,44 @@ test('short public-card fallback fits the recommended low-context range without 
   assert.equal(response.status, 200);
   assert.equal(data.usedSafeFallback, true);
   assert.equal(data.withinRange, true);
-  assert.deepEqual(data.counts, [127, 130]);
+  assert.deepEqual(data.counts, [142, 140]);
+});
+
+test('replaces card-writing meta language with the supplied public template without another API call', async () => {
+  let calls = 0;
+  const handler = createHandler({
+    fetchImpl: async () => {
+      calls += 1;
+      return openAIResponse({
+        variants: [
+          '表哥：寫這張小卡時，最想提起以前一起玩遊戲的那段時光。書平 ＆ 秋華',
+          '表哥：想藉著這張卡片寫下一些話給你，謝謝你參加婚禮。書平 ＆ 秋華'
+        ]
+      });
+    },
+    usageClient: makeUsageClient()
+  });
+  const response = await handler(workerRequest('/generate', {
+    body: {
+      action: 'generate',
+      profile: profile({
+        name: '表哥',
+        generation: '平輩',
+        closeness: '較少互動',
+        minLength: 120,
+        maxLength: 150,
+        story: '以前常一起玩遊戲，到現在還是很懷念。'
+      })
+    }
+  }), ENV);
+  const data = await response.json();
+
+  assert.equal(response.status, 200);
+  assert.equal(calls, 1);
+  assert.equal(data.usedSafeFallback, true);
+  assert.equal(data.withinRange, true);
+  assert.deepEqual(data.counts, [142, 140]);
+  for (const text of data.variants) assert.doesNotMatch(text, /小卡|卡片|寫下這些話|透過文字/);
 });
 
 test('revision returns one checked card and validates required text', async () => {
