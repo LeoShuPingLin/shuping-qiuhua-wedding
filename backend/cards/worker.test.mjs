@@ -14,7 +14,10 @@ function profile(overrides = {}) {
   return {
     name: '舅媽',
     author: '書平',
+    relation: '親戚',
     generation: '長輩',
+    closeness: '非常親近',
+    traits: ['溫暖', '善於傾聽'],
     story: '從小回彰化都會住舅媽家，她總是準備很多好吃的，也很關心我們全家。',
     tone: 'AI 自動判斷',
     pronoun: 'AI 自動判斷',
@@ -61,14 +64,21 @@ test('counts Unicode characters while excluding whitespace', () => {
 test('normalizes one free-form story and rejects an invalid range', () => {
   const normalized = normalizePayload({ action: 'generate', profile: profile() });
   assert.equal(normalized.profile.story.includes('彰化'), true);
+  assert.equal(normalized.profile.relation, '親戚');
+  assert.equal(normalized.profile.closeness, '非常親近');
+  assert.deepEqual(normalized.profile.traits, ['溫暖', '善於傾聽']);
   assert.equal(normalized.profile.minLength, 150);
   assert.throws(() => normalizePayload({ action: 'generate', profile: profile({ minLength: 200, maxLength: 160 }) }), /字數範圍/);
+  assert.throws(() => normalizePayload({ action: 'generate', profile: profile({ traits: ['不存在的個性'] }) }), /個性選項/);
 });
 
 test('instructions tell the model to silently parse notes without inventing facts', () => {
   const instructions = buildInstructions(normalizePayload({ action: 'generate', profile: profile() }));
   assert.match(instructions, /先在心中解析/);
   assert.match(instructions, /不得補寫/);
+  assert.match(instructions, /關係類型為「親戚」/);
+  assert.match(instructions, /彼此非常親近/);
+  assert.match(instructions, /溫暖、善於傾聽/);
   assert.match(instructions, /150～160/);
   assert.match(instructions, /書平/);
 });
@@ -109,6 +119,8 @@ test('generate sends a server-built structured request and returns two variants'
   assert.equal(captured.body.text.format.type, 'json_schema');
   assert.equal(captured.body.text.format.strict, true);
   assert.match(captured.body.input, /彰化/);
+  assert.match(captured.body.input, /親戚/);
+  assert.match(captured.body.input, /善於傾聽/);
   assert.doesNotMatch(captured.body.input, /前端 prompt 必須被忽略/);
 });
 
