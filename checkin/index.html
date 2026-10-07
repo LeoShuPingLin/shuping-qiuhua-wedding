@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="mobile.css?v=20261007-2" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../seating/config.js"></script>
-  <script defer src="app.js?v=20261007-1"></script>
+  <script defer src="app-v2.js?v=20261007-3"></script>
 </head>
 <body>
   <section class="auth-shell" id="authShell">
@@ -18,12 +18,11 @@
       <h1>書平 & 秋華</h1>
       <p class="auth-copy">婚宴報到・帶位回報</p>
       <form id="loginForm" class="login-form">
-        <label>Email<input id="loginEmail" type="email" autocomplete="username" required /></label>
-        <label>密碼<input id="loginPassword" type="password" autocomplete="current-password" required /></label>
-        <button class="btn primary wide" id="loginBtn" type="submit">登入</button>
+        <label>工作人員密碼<input id="loginPassword" type="password" autocomplete="current-password" required placeholder="請輸入工作人員密碼" /></label>
+        <button class="btn primary wide" id="loginBtn" type="submit">進入報到系統</button>
       </form>
       <div class="auth-msg" id="authMsg"></div>
-      <p class="privacy-note">僅婚禮工作人員可使用。登入後只要搜尋來賓，依實際到場人數回報即可。</p>
+      <p class="privacy-note">婚禮工作人員專用。只要輸入密碼即可，不需要 Email。</p>
     </div>
   </section>
 
@@ -35,7 +34,7 @@
         <p>搜尋來賓 → 確認桌次 → 回報到場人數</p>
       </div>
       <div class="account-box">
-        <div><b id="accountEmail">—</b><span id="accountRole">工作人員</span></div>
+        <div><b id="accountEmail">帶位人員</b><span id="accountRole">工作人員</span></div>
         <button class="btn" id="logoutBtn" type="button">登出</button>
       </div>
     </header>
