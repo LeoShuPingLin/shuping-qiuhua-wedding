@@ -1,0 +1,65 @@
+/* Search-first mobile layout for wedding-day check-in */
+@media(max-width:850px){
+  .app{padding:8px 10px calc(28px + env(safe-area-inset-bottom))}
+  .hero{position:relative;margin:0 0 8px;padding:4px 2px;display:flex;align-items:center;gap:8px}
+  .hero>div:first-child{flex:1;min-width:0}
+  .hero h1{font-size:22px;margin:0;font-weight:950}
+  .hero p{margin-top:2px;font-size:12px;color:#8d7d82}
+  .hero .eyebrow{display:none}
+  .hero-side{display:flex;align-items:center;gap:7px}
+  #saveStatus{font-size:11px;font-weight:850;color:#5d806c;white-space:nowrap}
+  #saveStatus.error{color:#b55f55}
+  .hero .btn{height:38px;padding:0 11px;border-radius:11px}
+
+  .controls{position:sticky;top:0;z-index:40;display:grid;grid-template-columns:1fr auto;gap:7px;margin:0 -2px 0;padding:8px;background:rgba(255,255,255,.98);border-radius:16px;box-shadow:0 8px 24px rgba(72,48,55,.12);backdrop-filter:blur(14px)}
+  .search{grid-column:1/-1;height:58px;border:2px solid #c98a9a;border-radius:15px;padding:0 12px;background:#fff}
+  .search-mark{font-size:22px;color:#9c596a;font-weight:900}
+  .search input{height:54px;padding:0;font-size:20px;font-weight:850;letter-spacing:.02em}
+  .search input::placeholder{font-size:17px;font-weight:600;color:#a9979c}
+  .search-foot{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:-2px;padding:0 3px}
+  #searchCount{font-size:12px;font-weight:850;color:#8d6b75}
+  .search-tip{font-size:11px;color:#9a8a8f}
+  #tableFilter{display:none}
+  .toggle{height:43px;padding:0 10px;border:1px solid var(--line);border-radius:12px;background:#fff;font-size:14px;font-weight:850;justify-content:center}
+  .toggle input{width:20px;height:20px;accent-color:#9c596a}
+  #clearFilterBtn{height:43px;padding:0 12px;font-size:13px;border-radius:12px;color:#75656a;background:#faf8f8}
+
+  .table-chips{margin:0 -10px;padding:9px 10px 8px;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .table-chips::-webkit-scrollbar{display:none}
+  .table-chip{min-height:42px;padding:8px 12px;font-size:13px;font-weight:800;border-radius:12px}
+  .table-chip b{font-size:11px;margin-left:3px}
+  .table-chip.active{background:#9c596a;color:#fff;border-color:#9c596a}
+
+  .stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin:0 0 9px}
+  .stat{min-width:0;border-radius:12px;padding:8px 4px;text-align:center;box-shadow:none}
+  .stat b{font-family:inherit;font-size:21px;line-height:1.05;font-weight:950;white-space:nowrap}
+  .stat span{display:block;margin-top:3px;font-size:10px;line-height:1.1;white-space:nowrap}
+
+  .guest-list{gap:9px;padding-bottom:calc(78px + env(safe-area-inset-bottom))}
+  .guest-card{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px 8px;border-left:0;border:2px solid #e6dadd;border-radius:18px;padding:13px 12px 11px;box-shadow:0 4px 14px rgba(72,48,55,.05)}
+  .guest-card.partial{border-color:#e5b373;background:#fff9ef}
+  .guest-card.done{border-color:#9fc7ad;background:#f1faf4}
+  .guest-name{font-size:22px;line-height:1.2;font-weight:950}
+  .guest-meta{gap:5px;margin-top:7px}
+  .tag{font-size:13px;line-height:1;padding:6px 8px;border-radius:8px;font-weight:800}
+  .tag.table{background:#eaf0f7;color:#3e6079}
+  .companion{margin-top:8px;font-size:13px;line-height:1.45;color:#6f6065}
+  .arrival-summary{align-self:start;text-align:right;min-width:72px;padding-top:2px}
+  .arrival-summary b{font-size:25px;line-height:1;font-weight:950}
+  .arrival-summary span{display:block;font-size:12px;margin-top:5px;font-weight:900}
+  .arrival-controls{grid-column:1/-1;display:grid;grid-template-columns:58px minmax(70px,1fr) 58px;gap:8px;margin-top:1px}
+  .arrival-controls button,.arrival-controls input{height:54px;border-radius:14px;font-size:22px;border-width:1.5px}
+  .arrival-controls button[data-delta]{font-size:28px;background:#fff}
+  .arrival-controls input{font-weight:950;background:#fff}
+  .arrival-controls .full-btn{grid-column:1/-1;height:57px;background:#4f8464;border-color:#4f8464;color:#fff;font-size:19px;font-weight:950}
+  .arrival-controls .full-btn:disabled{background:#dce9e0;border-color:#dce9e0;color:#537663;opacity:1}
+  .last-update{grid-column:1/-1;margin:0;text-align:right;font-size:10px;color:#a09195}
+  .empty{padding:34px 16px;font-size:15px;line-height:1.7}
+  .empty small{color:#9b8b90}
+}
+
+@media(max-width:390px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .stat{text-align:left;padding:9px 8px}
+  .stat b{font-size:23px}
+}
