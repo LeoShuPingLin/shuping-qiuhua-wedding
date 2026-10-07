@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#f7eef1" />
   <title>書平 & 秋華｜婚宴報到</title>
   <link rel="stylesheet" href="style.css?v=20261007-1" />
+  <link rel="stylesheet" href="mobile.css?v=20261007-2" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../seating/config.js"></script>
   <script defer src="app.js?v=20261007-1"></script>
@@ -22,7 +23,7 @@
         <button class="btn primary wide" id="loginBtn" type="submit">登入</button>
       </form>
       <div class="auth-msg" id="authMsg"></div>
-      <p class="privacy-note">僅婚禮工作人員可使用。此頁只讀取既有桌次資料，報到狀態會另外儲存。</p>
+      <p class="privacy-note">僅婚禮工作人員可使用。登入後只要搜尋來賓，依實際到場人數回報即可。</p>
     </div>
   </section>
 
@@ -31,7 +32,7 @@
       <div>
         <div class="eyebrow">WEDDING CHECK-IN · LIVE</div>
         <h1>婚宴報到</h1>
-        <p>搜尋來賓、確認桌次，回報目前實際到場人數。</p>
+        <p>搜尋來賓 → 確認桌次 → 回報到場人數</p>
       </div>
       <div class="account-box">
         <div><b id="accountEmail">—</b><span id="accountRole">工作人員</span></div>
@@ -40,17 +41,22 @@
     </header>
 
     <section class="reporter-bar">
-      <label>回報人員<input id="reporterName" placeholder="例如：書平、阿豪、芳芳" maxlength="30" /></label>
+      <label>我是誰？<input id="reporterName" placeholder="請填你的名字，例如：阿豪" maxlength="30" /></label>
       <span id="saveStatus">● 已連線</span>
+    </section>
+
+    <section class="quick-help">
+      <b>當天怎麼用？</b>
+      <span>找到來賓後，全部到齊就按「全到」；如果只到部分人，用 ＋／－ 調整即可。</span>
     </section>
 
     <section class="stats" id="stats"></section>
 
     <section class="controls">
-      <div class="search">⌕ <input id="searchInput" placeholder="搜尋姓名、同行者、桌名…" autocomplete="off" /></div>
+      <div class="search">⌕ <input id="searchInput" placeholder="搜尋姓名、同行者或桌名" autocomplete="off" /></div>
       <select id="tableFilter"><option value="all">全部桌次</option></select>
       <label class="toggle"><input id="pendingOnly" type="checkbox" /> 只看未全到</label>
-      <button class="btn" id="clearFilterBtn" type="button">清除篩選</button>
+      <button class="btn" id="clearFilterBtn" type="button">清除搜尋／篩選</button>
     </section>
 
     <section class="table-chips" id="tableChips"></section>
